@@ -1,0 +1,60 @@
+.actionsContainer {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.03);
+}
+
+.actionButton {
+  flex: 1 1 45%;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
+}
+
+.actionButton:disabled {
+  background: #3d3d3d;
+  color: #8c8c8c;
+  cursor: not-allowed;
+}
+
+.drawButton {
+  background: #007aff;
+}
+
+.drawButton:hover:not(:disabled) {
+  background: #339aff;
+}
+
+.discardButton {
+  background: #e53935;
+}
+
+.discardButton:hover:not(:disabled) {
+  background: #ff5a50;
+}
+
+.cutButton {
+  background: #4caf50;
+}
+
+.cutButton:hover:not(:disabled) {
+  background: #67d267;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .actionButton {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+}

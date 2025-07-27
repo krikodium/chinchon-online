@@ -1,0 +1,27 @@
+.playerHandContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Aumentamos el solapamiento vertical de las filas */
+  gap: -85px; 
+}
+
+.opponentHandContainer,
+.handRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 160px; 
+  padding: 20px;
+}
+
+.cardWrapper {
+  transition: transform 0.3s ease-in-out;
+  position: relative;
+}
+
+/* El truco para el solapamiento estable: margen negativo */
+.cardWrapper:not(:first-child) {
+  /* Aumentamos el solapamiento horizontal */
+  margin-left: -60px; 
+}

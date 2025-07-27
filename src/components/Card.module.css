@@ -1,0 +1,62 @@
+.card {
+  width: 80px;
+  height: 120px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #333;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+  user-select: none;
+}
+
+.cardBack {
+  background: linear-gradient(135deg, #8b0000, #4a0000);
+  border: 2px solid #6a1b1b;
+}
+
+.valueTop, .valueBottom {
+  position: absolute;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.valueTop {
+  top: 8px;
+  left: 10px;
+}
+
+.valueBottom {
+  bottom: 8px;
+  right: 10px;
+  transform: rotate(180deg);
+}
+
+.suitContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.suitImage {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.suitName {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Estado de la carta al ser arrastrada */
+.sortableCard:active .card {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  transform: scale(1.1);
+}

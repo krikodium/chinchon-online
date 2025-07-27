@@ -1,0 +1,36 @@
+.infoContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  min-width: 150px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: #6a4a8b; /* Color de fondo si la imagen no carga */
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.name {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.score {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
