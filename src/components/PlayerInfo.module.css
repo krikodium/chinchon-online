@@ -1,31 +1,103 @@
+/* === CONTENEDOR PRINCIPAL === */
 .playerInfoContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(25, 25, 25, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
   padding: 8px 12px;
-  border-radius: 8px;
-  min-width: 80px;
-  color: #fff;
-  text-align: center;
-  font-family: 'Roboto', sans-serif;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  min-width: 110px;
+  box-shadow: 0 0 12px rgba(158, 86, 255, 0.4);
+  border: 1px solid rgba(158, 86, 255, 0.3);
+  position: absolute;
+  z-index: 20;
 }
 
+/* === AVATAR DEL JUGADOR === */
+.playerAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(158, 86, 255, 0.5);
+  margin-bottom: 6px;
+}
+.playerAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* === TEXTO: NOMBRE === */
 .playerName {
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-.playerScore {
   font-size: 0.9rem;
-  color: #ffd54f;
+  font-weight: bold;
+  margin-bottom: 2px;
+  color: #fff;
+  text-shadow: 0 0 4px rgba(158, 86, 255, 0.5);
 }
 
+/* === TEXTO: PUNTOS === */
+.playerScore {
+  font-size: 0.8rem;
+  color: #bb86fc;
+  font-weight: 500;
+}
+
+/* === UBICACIÓN: OPONENTE === */
+.opponentPosition {
+  top: -60px; /* justo arriba de la mesa */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* === UBICACIÓN: JUGADOR === */
+.playerPosition {
+  bottom: -60px; /* justo debajo de la mesa */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* === MOBILE === */
 @media (max-width: 768px) {
   .playerInfoContainer {
-    padding: 6px 8px;
-    font-size: 0.9rem;
+    padding: 6px 10px;
+    min-width: 95px;
+  }
+  .playerAvatar {
+    width: 42px;
+    height: 42px;
+  }
+  .playerName {
+    font-size: 0.8rem;
+  }
+  .playerScore {
+    font-size: 0.75rem;
+  }
+  .opponentPosition {
+    top: -55px;
+  }
+  .playerPosition {
+    bottom: -55px;
+  }
+}
+
+/* === DESKTOP === */
+@media (min-width: 1024px) {
+  .playerInfoContainer {
+    padding: 10px 14px;
+    min-width: 130px;
+  }
+  .playerAvatar {
+    width: 58px;
+    height: 58px;
+  }
+  .playerName {
+    font-size: 1rem;
+  }
+  .playerScore {
+    font-size: 0.85rem;
   }
 }

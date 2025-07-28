@@ -1,234 +1,230 @@
+/* === VIEWPORT GENERAL === */
 .gameBoard {
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  height: 100vh;
-  width: 100vw;
   background: radial-gradient(circle at center, #1a0d2d 0%, #0f071a 100%);
-  box-sizing: border-box;
   overflow: hidden;
+  position: relative;
 }
 
-/* Zonas de jugador y oponente */
+/* === ZONA DE MANOS === */
 .playerZone {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  margin: 10px 0;
+  overflow: visible;
+  margin: 0;
+  padding: 0;
 }
 
-/* --- Mesa central --- */
+/* === MESA CENTRAL === */
 .centerArea {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   gap: 16px;
-  background: rgba(15, 15, 15, 0.6);
-  backdrop-filter: blur(18px);
-  border-radius: 16px;
-  padding: 16px 20px;
-  box-shadow: 0 0 20px rgba(158, 86, 255, 0.35);
-  border: 1px solid rgba(158, 86, 255, 0.2);
+  width: 85%;
+  max-width: 320px;
+  background: rgba(25, 20, 40, 0.65);
+  border-radius: 14px;
+  padding: 8px 10px;
+  margin: 0 auto;
+  border: 1px solid rgba(158, 86, 255, 0.25);
+  box-shadow: 0 0 12px rgba(158, 86, 255, 0.35);
+  backdrop-filter: blur(12px);
   position: relative;
-  transition: all 0.4s ease-in-out;
   z-index: 10;
 }
 
-.centerArea:hover {
-  box-shadow: 0 0 30px rgba(158, 86, 255, 0.6), 0 0 45px rgba(158, 86, 255, 0.3);
-  transform: scale(1.02);
-}
-
-/* Glow animado detrás de la mesa */
+/* === EFECTO DE BRILLO NEÓN EN LA MESA === */
 .centerArea::before {
   content: '';
   position: absolute;
-  top: -30%;
-  left: -30%;
   width: 160%;
   height: 160%;
-  background: radial-gradient(circle, rgba(158, 86, 255, 0.25), transparent 70%);
+  top: -30%;
+  left: -30%;
+  background: radial-gradient(circle, rgba(158, 86, 255, 0.15), transparent 70%);
   z-index: -1;
   animation: neonPulse 3s infinite ease-in-out;
 }
 
 @keyframes neonPulse {
-  0%, 100% {
-    opacity: 0.35;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.05);
-  }
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.05); }
 }
 
-/* --- Áreas del mazo, descarte y cortar --- */
-.deckArea,
-.discardPileSlot,
-.cutSlot {
-  width: 80px;
-  height: 110px;
+/* === MAZO (ÁREA PRINCIPAL) === */
+.deckArea {
+  width: 65px;
+  height: 95px;
+  position: relative;
+  cursor: pointer;
+}
+
+/* === CARTAS DEL MAZO APILADAS === */
+.deckCard {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.deckCard:nth-child(1) {
+  transform: translate(0px, 0px) rotate(-3deg);
+}
+.deckCard:nth-child(2) {
+  transform: translate(3px, 2px) rotate(-1deg);
+}
+.deckCard:nth-child(3) {
+  transform: translate(6px, 4px) rotate(1deg);
+}
+.deckCard:nth-child(4) {
+  transform: translate(9px, 6px) rotate(0deg);
+}
+.deckCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* === DESCARTE === */
+.discardPileSlot {
+  width: 65px;
+  height: 95px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease;
 }
-
-.deckArea {
-  cursor: pointer;
-}
-
-.deckArea:hover,
-.discardPileSlot:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(158, 86, 255, 0.6);
-}
-
-.deckCard img {
-  width: 100%;
-  border-radius: 6px;
-}
-
 .discardPileSlot img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   border-radius: 8px;
 }
-
-.discardPlaceholder {
-  width: 100%;
-  height: 100%;
-  border: 2px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-}
-
-/* Animación de impacto cuando tiras carta */
 .discardPileSlot.activeImpact {
-  transform: scale(1.12);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  transform: scale(1.08);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
 }
 
+/* === BOTÓN CORTAR === */
 .cutSlot {
+  width: 60px;
+  height: 95px;
   border: 2px dashed rgba(255, 255, 255, 0.3);
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+@media (hover: hover) {
+  .cutSlot:hover {
+    background: rgba(158, 86, 255, 0.15);
+    color: #fff;
+    border-color: rgba(158, 86, 255, 0.6);
+  }
 }
 
-.cutSlot.activeCut {
-  border-color: #66bb6a;
-  color: #66bb6a;
+/* === PLAYER INFO (OPONENTE) === */
+.opponentInfo {
+  position: absolute;
+  top: calc(50% - 190px); /* justo arriba de la mesa */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
 }
 
-/* --- Info Jugadores Moderno --- */
-.opponentInfo,
+/* === PLAYER INFO (JUGADOR) === */
 .playerInfo {
   position: absolute;
-  background: rgba(25, 25, 25, 0.6);
-  backdrop-filter: blur(12px);
-  border-radius: 12px;
-  padding: 10px 14px;
-  color: #fff;
-  font-family: 'Roboto', sans-serif;
-  font-weight: bold;
-  font-size: 1rem;
-  box-shadow: 0 0 8px rgba(158, 86, 255, 0.4);
-  border: 1px solid rgba(158, 86, 255, 0.3);
-  text-align: center;
-  transition: transform 0.3s ease;
+  bottom: calc(50% - 190px); /* justo debajo de la mesa */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
 }
 
-.opponentInfo:hover,
-.playerInfo:hover {
-  transform: scale(1.05);
+/* === CARTA TEMPORAL (ANIMACIÓN DE MOVER) === */
+.tempCard {
+  width: 65px;
+  height: 95px;
+  position: absolute;
+  z-index: 999;
 }
 
-.opponentInfo {
-  top: 38%;
-  right: 20%;
-}
-
-.playerInfo {
-  bottom: 38%;
-  left: 20%;
-}
-
-.opponentInfo span,
-.playerInfo span {
-  display: block;
-}
-
-.opponentInfo .score,
-.playerInfo .score {
-  font-size: 0.85rem;
-  color: #bb86fc;
-}
-
-/* Responsive ajustes */
+/* === MOBILE (OPTIMIZACIÓN) === */
 @media (max-width: 768px) {
   .centerArea {
-    flex-direction: column;
+    width: 90%;
     gap: 12px;
-    padding: 12px 14px;
+    padding: 6px 8px;
   }
 
-  .deckArea,
-  .discardPileSlot,
+  .deckArea {
+    width: 60px;
+    height: 90px;
+  }
+
+  .discardPileSlot {
+    width: 60px;
+    height: 90px;
+  }
+
   .cutSlot {
-    width: 65px;
-    height: 95px;
+    width: 55px;
+    height: 90px;
+    font-size: 0.75rem;
   }
 
-  .playerInfo,
-  .opponentInfo {
-    font-size: 0.9rem;
-    padding: 8px 10px;
+  .tempCard {
+    width: 60px;
+    height: 90px;
   }
 
   .opponentInfo {
-    top: 28%;
-    right: 10%;
+    top: calc(50% - 180px);
   }
 
   .playerInfo {
-    bottom: 28%;
-    left: 10%;
+    bottom: calc(50% - 180px);
   }
 }
-.centerArea {
-  width: fit-content;
-  margin: 0 auto;
-}
 
-.playerZone {
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-
+/* === DESKTOP (ESPACIADOS MAYORES) === */
 @media (min-width: 1024px) {
   .centerArea {
-    gap: 24px;
-    padding: 20px 28px;
+    max-width: 500px;
+    gap: 18px;
   }
 
-  .deckArea,
-  .discardPileSlot,
+  .deckArea {
+    width: 80px;
+    height: 115px;
+  }
+
+  .discardPileSlot {
+    width: 80px;
+    height: 115px;
+  }
+
   .cutSlot {
-    width: 90px;
-    height: 130px;
+    width: 75px;
+    height: 115px;
+    font-size: 0.9rem;
   }
 
-  .playerInfo,
-  .opponentInfo {
-    font-size: 1.1rem;
-    padding: 12px 16px;
+  .tempCard {
+    width: 75px;
+    height: 115px;
   }
 }

@@ -3,7 +3,6 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { motion } from 'framer-motion';
 import Card from './Card';
-// Importación corregida para apuntar a los estilos de la carta
 import styles from './Card.module.css';
 
 function SortableCard({ card }) {
@@ -21,8 +20,13 @@ function SortableCard({ card }) {
       style={style}
       {...attributes}
       {...listeners}
-      className={styles.sortableCard} // Esta clase aplica el efecto al arrastrar
-      whileHover={{ scale: 1.08, y: -10 }}
+      className={styles.sortableCard}
+      whileDrag={{
+        scale: 1.15,
+        rotate: 6,
+        zIndex: 999,
+        boxShadow: '0 12px 24px rgba(0,0,0,0.35)',
+      }}
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
     >
       <Card cardInfo={card} />

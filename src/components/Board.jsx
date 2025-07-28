@@ -9,7 +9,6 @@ import PlayerHand from './PlayerHand';
 import Card from './Card';
 import PlayerInfo from './PlayerInfo';
 
-// Importamos imágenes directamente para el mazo y dorso
 import imgBack from '../assets/back.png';
 
 function Board() {
@@ -126,21 +125,19 @@ function Board() {
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className={styles.gameBoard}>
 
-        {/* Mano Oponente */}
+        {/* Info del Oponente */}
+        <div className={styles.opponentInfo}>
+          <PlayerInfo playerName="Oponente" playerScore={scores.player2} />
+        </div>
+
+        {/* Mano del Oponente */}
         <div className={styles.playerZone}>
           <PlayerHand cards={gameState.player2Hand} opponent={true} />
         </div>
 
-        {/* Info Jugadores */}
-        <div className={styles.opponentInfo}>
-          <PlayerInfo playerName="Oponente" playerScore={scores.player2} />
-        </div>
-        <div className={styles.playerInfo}>
-          <PlayerInfo playerName="Tú" playerScore={scores.player1} />
-        </div>
-
         {/* Mesa Central */}
         <div className={styles.centerArea}>
+          {/* Mazo */}
           <motion.div
             className={styles.deckArea}
             whileTap={{ scale: 0.95 }}
@@ -160,38 +157,36 @@ function Board() {
             ))}
           </motion.div>
 
-          <div
-            id="discard-area"
-            ref={discardRef}
-            className={`${styles.discardPileSlot} ${discardImpact ? styles.activeImpact : ''}`}
-          >
+          {/* Descarte */}
+          <div id="discard-area" ref={discardRef} className={`${styles.discardPileSlot} ${discardImpact ? styles.activeImpact : ''}`}>
             {gameState.discardPile.length > 0
               ? <Card cardInfo={gameState.discardPile[0]} />
               : <div className={styles.discardPlaceholder}></div>}
           </div>
 
+          {/* Botón Cortar */}
           <div id="cut-area" className={`${styles.cutSlot} ${canPlayerCut ? styles.activeCut : ''}`}>
             Cortar
           </div>
         </div>
 
-        {/* Mano Jugador */}
+        {/* Mano del Jugador */}
         <div className={styles.playerZone}>
           <PlayerHand cards={gameState.player1Hand} />
         </div>
 
-        {/* Carta robada animada */}
+        {/* Info del Jugador */}
+        <div className={styles.playerInfo}>
+          <PlayerInfo playerName="Tú" playerScore={scores.player1} />
+        </div>
+
+        {/* Animación al robar carta */}
         <AnimatePresence>
           {lastDrawnCard && (
             <motion.div
               className={styles.tempCard}
-              initial={{ opacity: 1, scale: 0.8, y: -150 }}
-              animate={{
-                x: [0, 30, 0],
-                y: [-150, -50, 0],
-                rotate: [0, 8, 4],
-                scale: [0.8, 1.05, 1],
-              }}
+              initial={{ opacity: 1, scale: 0.8, y: -100 }}
+              animate={{ x: [0, 20, 0], y: [-100, -40, 0], rotate: [0, 8, 4], scale: [0.8, 1.05, 1] }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6, ease: 'easeInOut' }}
               onAnimationComplete={handleDrawAnimationComplete}
@@ -201,18 +196,13 @@ function Board() {
           )}
         </AnimatePresence>
 
-        {/* Carta tirada animada */}
+        {/* Animación al descartar */}
         <AnimatePresence>
           {lastPlayedCardPlayer && (
             <motion.div
               className={styles.tempCard}
-              initial={{ opacity: 1, scale: 1, y: 200 }}
-              animate={{
-                x: [0, discardTarget.x],
-                y: [200, discardTarget.y],
-                rotate: [0, 10, 5],
-                scale: [1, 1.05, 1],
-              }}
+              initial={{ opacity: 1, scale: 1, y: 150 }}
+              animate={{ x: [0, discardTarget.x], y: [150, discardTarget.y], rotate: [0, 10, 5], scale: [1, 1.05, 1] }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.6, ease: 'easeInOut' }}
             >
