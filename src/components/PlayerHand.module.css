@@ -1,48 +1,107 @@
+/* Contenedor principal */
 .playerHandContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* El solapamiento vertical es clave. 
-     Este valor negativo "junta" las dos filas de cartas. 
-     Ajusta este valor en pequeños incrementos si necesitas más o menos espacio. */
-  gap: -130px; 
+  justify-content: center;
+  gap: -60px; /* Espacio negativo entre filas */
+  margin-top: 8px;
+  width: 100%;
+  max-width: 380px; /* Para evitar desborde en mobile */
+  overflow: visible;
 }
 
-/* Contenedor general para una fila de cartas, ya sea del jugador o del oponente. */
+/* Cada fila */
 .handRow {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* La altura define el espacio vertical que ocupa la fila, 
-     lo que ayuda a controlar cómo se superponen con otras zonas. */
-  height: 170px; 
-  padding: 15px 20px;
+  height: 130px; /* Mantiene altura consistente */
+  padding: 4px 0;
+  overflow: visible;
 }
 
-/* Este es el contenedor individual de cada carta. 
-  Lo usamos para aplicar transformaciones sin afectar directamente a la carta.
-*/
+/* Cartas */
 .cardWrapper {
-  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), 
-              margin 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
+  width: 68px;   /* Tamaño fijo en mobile */
+  height: 100px;
+  transition: transform 0.3s ease, margin 0.3s ease;
+  will-change: transform;
 }
 
-/* Este es el selector más importante para el efecto de "abanico".
-  Aplica un margen negativo a todas las cartas excepto a la primera de la fila,
-  haciendo que se superpongan una encima de la otra.
-*/
+/* Imagen interna */
+.cardWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* Superposición controlada */
 .cardWrapper:not(:first-child) {
-  /* Un valor más negativo significa más superposición (cartas más juntas).
-     Un valor menos negativo significa menos superposición (cartas más separadas). */
-  margin-left: -82px; 
+  margin-left: -38px; /* Espaciado fijo para abanico */
 }
 
-/*
-  Al pasar el ratón por encima, levantamos la carta para dar feedback visual.
-  El `z-index` asegura que se muestre por encima de sus hermanas.
-*/
-.cardWrapper:hover {
-  transform: translateY(-20px) scale(1.05);
-  z-index: 100;
+/* Hover solo Desktop */
+@media (hover: hover) {
+  .cardWrapper:hover {
+    transform: translateY(-12px) scale(1.05);
+    z-index: 100;
+  }
+}
+
+/* En mobile desactiva hover */
+@media (hover: none) {
+  .cardWrapper:hover {
+    transform: none;
+  }
+}
+
+/* Mano del oponente */
+.opponentHand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90px;
+}
+
+.opponentHand .cardWrapper:not(:first-child) {
+  margin-left: -34px;
+}
+
+/* Ajustes responsive */
+@media (min-width: 768px) {
+  .playerHandContainer {
+    gap: -70px;
+    max-width: 500px;
+  }
+  .cardWrapper {
+    width: 82px;
+    height: 120px;
+  }
+  .handRow {
+    height: 150px;
+  }
+  .cardWrapper:not(:first-child) {
+    margin-left: -45px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .playerHandContainer {
+    gap: -80px;
+    max-width: 600px;
+  }
+  .cardWrapper {
+    width: 95px;
+    height: 135px;
+  }
+  .handRow {
+    height: 160px;
+  }
+  .cardWrapper:not(:first-child) {
+    margin-left: -55px;
+  }
 }
