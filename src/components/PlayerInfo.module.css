@@ -1,36 +1,31 @@
-.infoContainer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: rgba(0, 0, 0, 0.3);
-  padding: 8px;
-  border-radius: 50px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  min-width: 150px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid white;
-  background-color: #6a4a8b; /* Color de fondo si la imagen no carga */
-}
-
-.details {
+.playerInfoContainer {
   display: flex;
   flex-direction: column;
-  line-height: 1.1;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 12px;
+  border-radius: 8px;
+  min-width: 80px;
+  color: #fff;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-.name {
+.playerName {
+  font-size: 1rem;
   font-weight: bold;
-  font-size: 0.9rem;
 }
 
-.score {
-  font-size: 0.8rem;
-  opacity: 0.9;
+.playerScore {
+  font-size: 0.9rem;
+  color: #ffd54f;
+}
+
+@media (max-width: 768px) {
+  .playerInfoContainer {
+    padding: 6px 8px;
+    font-size: 0.9rem;
+  }
 }
