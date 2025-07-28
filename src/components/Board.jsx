@@ -9,9 +9,12 @@ import PlayerHand from './PlayerHand';
 import Card from './Card';
 import PlayerInfo from './PlayerInfo';
 
+// --- IMPORTACIÓN DE ASSETS ---
 import imgBack from '../assets/back.png';
+import playerAvatarImg from '../assets/avatar.png'; // 1. Avatar importado
 
 function Board() {
+  // (El resto de los estados y hooks permanecen sin cambios)
   const [gameState, setGameState] = useState(null);
   const [scores, setScores] = useState({ player1: 0, player2: 0 });
   const [turnPhase, setTurnPhase] = useState('draw');
@@ -117,7 +120,7 @@ function Board() {
     setLastDrawnCard(null);
     setTurnPhase('discard');
   };
-
+  
   if (!gameState) return <div>Cargando partida...</div>;
 
   const discardTarget = getDiscardPosition();
@@ -125,15 +128,20 @@ function Board() {
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className={styles.gameBoard}>
-        {/* ZONA OPONENTE: Agrupamos la mano y la info */}
-        <div className={styles.playerZone}>
-          <div className={styles.opponentInfo}>
-            <PlayerInfo playerName="Oponente" playerScore={scores.player2} position="opponent" />
-          </div>
+
+        {/* --- ZONA OPONENTE (REESTRUCTURADA) --- */}
+        <div className={`${styles.playerZone} ${styles.opponentZone}`}>
           <PlayerHand cards={gameState.player2Hand} opponent={true} />
+          <div className={styles.opponentInfo}>
+            <PlayerInfo 
+              playerName="Oponente" 
+              playerScore={scores.player2} 
+              avatar={playerAvatarImg} // 2. Avatar pasado como prop
+            />
+          </div>
         </div>
 
-        {/* Mesa Central (sin cambios) */}
+        {/* --- MESA CENTRAL (SIN CAMBIOS) --- */}
         <div className={styles.centerArea}>
           <motion.div
             className={styles.deckArea}
@@ -156,15 +164,19 @@ function Board() {
           </div>
         </div>
 
-        {/* ZONA JUGADOR: Agrupamos la mano y la info */}
-        <div className={styles.playerZone}>
-          <PlayerHand cards={gameState.player1Hand} />
-          <div className={styles.playerInfo}>
-            <PlayerInfo playerName="Tú" playerScore={scores.player1} position="player" />
+        {/* --- ZONA JUGADOR (REESTRUCTURADA) --- */}
+        <div className={`${styles.playerZone} ${styles.mainPlayerZone}`}>
+           <div className={styles.playerInfo}>
+            <PlayerInfo 
+              playerName="Tú" 
+              playerScore={scores.player1} 
+              avatar={playerAvatarImg} // 2. Avatar pasado como prop
+            />
           </div>
+          <PlayerHand cards={gameState.player1Hand} />
         </div>
 
-        {/* Las animaciones de cartas se quedan fuera, lo cual es correcto */}
+        {/* --- ANIMACIONES DE CARTAS (SIN CAMBIOS) --- */}
         <AnimatePresence>
           {lastDrawnCard && (
             <motion.div className={styles.tempCard} initial={{ opacity: 1, scale: 0.8, y: -100 }} animate={{ x: [0, 20, 0], y: [-100, -40, 0], rotate: [0, 8, 4], scale: [0.8, 1.05, 1] }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease: 'easeInOut' }} onAnimationComplete={handleDrawAnimationComplete}>
@@ -179,6 +191,7 @@ function Board() {
             </motion.div>
           )}
         </AnimatePresence>
+
       </div>
     </DndContext>
   );

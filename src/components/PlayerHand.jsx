@@ -5,13 +5,29 @@ import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortabl
 import { motion } from 'framer-motion';
 
 function PlayerHand({ cards = [], opponent = false }) {
-  // Función de estilo sin cambios, ya que el layout es correcto.
+  
+  // --- FUNCIÓN DE ESTILO DEL ABANICO (AJUSTE DE PRECISIÓN) ---
   const getFanStyle = (index, total, isTopRow = true) => {
     const mid = (total - 1) / 2;
     const offset = index - mid;
+
+    // Lógica específica para el oponente
+    if (opponent) {
+      const angle = offset * 8; // 2. Ángulo ligeramente más suave
+      const translateX = offset * -20; // 1. Abanico más compacto para que entren las 7 cartas
+      const translateY = Math.abs(offset) * 3; 
+
+      return {
+        transform: `translateX(${translateX}px) translateY(${translateY}px) rotate(${angle}deg)`,
+        zIndex: 10 - Math.abs(offset),
+        position: 'relative', 
+      };
+    }
+
+    // Lógica para el jugador (sin cambios)
     const angle = offset * 6;
     const translateY = Math.abs(offset) * 4;
-    let finalTranslateY = opponent ? translateY : (isTopRow ? -translateY : translateY);
+    let finalTranslateY = isTopRow ? -translateY : translateY;
 
     return {
       transform: `rotate(${angle}deg) translateY(${finalTranslateY}px)`,
@@ -19,9 +35,7 @@ function PlayerHand({ cards = [], opponent = false }) {
     };
   };
 
-  // --- CONFIGURACIÓN DE ANIMACIONES PROFESIONALES ---
-
-  // 1. Animación de entrada para cada carta.
+  // --- CONFIGURACIÓN DE ANIMACIONES (Sin cambios) ---
   const cardVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.98 },
     visible: (index) => ({
@@ -29,25 +43,22 @@ function PlayerHand({ cards = [], opponent = false }) {
       y: 0,
       scale: 1,
       transition: {
-        type: 'spring', // Usamos una animación de resorte para un efecto suave.
-        damping: 15,    // Controla la "amortiguación" del resorte.
-        stiffness: 300, // Controla la "rigidez" del resorte.
-        delay: index * 0.05, // Mantenemos el retraso escalonado.
+        type: 'spring',
+        damping: 15,
+        stiffness: 300,
+        delay: index * 0.05,
       },
     }),
   };
 
-  // 2. Animación al arrastrar una carta.
   const whileDragAnimation = {
-    scale: 1.12, // Una escala ligeramente más sutil.
-    rotate: 3,   // Una rotación menor para más control.
+    scale: 1.12,
+    rotate: 3,
     zIndex: 999,
     boxShadow: '0 10px 20px rgba(0,0,0,0.25)',
   };
 
-  // --- RENDERIZADO DEL COMPONENTE ---
-
-  // LÓGICA PARA EL OPONENTE
+  // --- RENDERIZADO DEL OPONENTE ---
   if (opponent) {
     return (
       <div className={styles.opponentRow}>
@@ -56,13 +67,13 @@ function PlayerHand({ cards = [], opponent = false }) {
             <motion.div
               key={card.id}
               className={styles.cardWrapper}
-              style={getFanStyle(index, cards.length, false)}
-              custom={index} // Pasamos el index a las variantes para el delay.
+              style={getFanStyle(index, cards.length, false)} // La magia ocurre aquí
+              custom={index}
               initial="hidden"
               animate="visible"
               variants={{
                 ...cardVariants,
-                hidden: { opacity: 0, y: -20, scale: 0.98 } // El oponente entra desde arriba.
+                hidden: { opacity: 0, y: -20, scale: 0.98 }
               }}
             >
               <SortableCard card={{ ...card, isOpponentCard: true }} />
@@ -73,7 +84,7 @@ function PlayerHand({ cards = [], opponent = false }) {
     );
   }
 
-  // LÓGICA PARA EL JUGADOR
+  // --- RENDERIZADO DEL JUGADOR (Sin cambios) ---
   const topRow = cards.slice(0, 4);
   const bottomRow = cards.slice(4);
 
@@ -91,7 +102,7 @@ function PlayerHand({ cards = [], opponent = false }) {
             initial="hidden"
             animate="visible"
             variants={cardVariants}
-            layout // La prop layout es clave para animar cambios de posición automáticamente.
+            layout
             whileDrag={whileDragAnimation}
           >
             <SortableCard card={card} />
