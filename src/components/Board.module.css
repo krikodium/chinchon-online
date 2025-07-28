@@ -25,7 +25,7 @@
 /* === MESA CENTRAL === */
 .centerArea {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly; 
   align-items: center;
   gap: 16px;
   width: 85%;
@@ -114,43 +114,51 @@
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
 }
 
-/* === BOTÓN CORTAR === */
+/* === ZONA DE CORTE === */
 .cutSlot {
   width: 60px;
   height: 95px;
   border: 2px dashed rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5); 
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 8px;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
 }
-@media (hover: hover) {
-  .cutSlot:hover {
-    background: rgba(158, 86, 255, 0.15);
-    color: #fff;
-    border-color: rgba(158, 86, 255, 0.6);
-  }
+
+.cutSlotSymbol {
+    font-size: 2.5rem;
+    line-height: 1;
 }
+
+.cutSlot.activeCut,
+.cutSlot:hover {
+  background: rgba(158, 86, 255, 0.15);
+  color: #fff;
+  border-color: rgba(158, 86, 255, 0.6);
+}
+
 
 /* === PLAYER INFO (OPONENTE) === */
 .opponentInfo {
   position: absolute;
-  top: calc(50% - 190px); /* justo arriba de la mesa */
+  top: 50%; /* Lo anclamos al centro vertical */
   left: 50%;
-  transform: translateX(-50%);
+  /* Lo movemos a la derecha y lo centramos verticalmente */
+  transform: translate(245px, -50%); 
   z-index: 20;
 }
 
 /* === PLAYER INFO (JUGADOR) === */
 .playerInfo {
   position: absolute;
-  bottom: calc(50% - 190px); /* justo debajo de la mesa */
+  top: 50%; /* Lo anclamos al centro vertical */
   left: 50%;
-  transform: translateX(-50%);
+  /* Lo movemos a la izquierda y lo centramos verticalmente */
+  transform: translate(-245px, -50%);
   z-index: 20;
 }
 
@@ -170,33 +178,17 @@
     padding: 6px 8px;
   }
 
-  .deckArea {
-    width: 60px;
-    height: 90px;
-  }
-
-  .discardPileSlot {
-    width: 60px;
-    height: 90px;
-  }
-
-  .cutSlot {
-    width: 55px;
-    height: 90px;
-    font-size: 0.75rem;
-  }
-
-  .tempCard {
-    width: 60px;
-    height: 90px;
-  }
-
+  .deckArea { width: 60px; height: 90px; }
+  .discardPileSlot { width: 60px; height: 90px; }
+  .cutSlot { width: 55px; height: 90px; }
+  .cutSlotSymbol { font-size: 2rem; }
+  .tempCard { width: 60px; height: 90px; }
+  
   .opponentInfo {
-    top: calc(50% - 180px);
+    transform: translate(195px, -50%);
   }
-
   .playerInfo {
-    bottom: calc(50% - 180px);
+    transform: translate(-195px, -50%);
   }
 }
 
@@ -207,24 +199,16 @@
     gap: 18px;
   }
 
-  .deckArea {
-    width: 80px;
-    height: 115px;
-  }
+  .deckArea { width: 80px; height: 115px; }
+  .discardPileSlot { width: 80px; height: 115px; }
+  .cutSlot { width: 75px; height: 115px; }
+  .cutSlotSymbol { font-size: 3rem; }
+  .tempCard { width: 75px; height: 115px; }
 
-  .discardPileSlot {
-    width: 80px;
-    height: 115px;
+  .opponentInfo {
+    transform: translate(335px, -50%);
   }
-
-  .cutSlot {
-    width: 75px;
-    height: 115px;
-    font-size: 0.9rem;
-  }
-
-  .tempCard {
-    width: 75px;
-    height: 115px;
+  .playerInfo {
+    transform: translate(-335px, -50%);
   }
 }

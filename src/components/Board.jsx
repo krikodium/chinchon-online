@@ -79,6 +79,7 @@ function Board() {
 
     if (over.id === 'cut-area' && canPlayerCut) {
       alert(`¡Cortaste la partida!`);
+      // Aquí iría la lógica para finalizar la ronda
       return;
     }
 
@@ -124,20 +125,16 @@ function Board() {
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className={styles.gameBoard}>
-
-        {/* Info del Oponente */}
-        <div className={styles.opponentInfo}>
-          <PlayerInfo playerName="Oponente" playerScore={scores.player2} />
-        </div>
-
-        {/* Mano del Oponente */}
+        {/* ZONA OPONENTE: Agrupamos la mano y la info */}
         <div className={styles.playerZone}>
+          <div className={styles.opponentInfo}>
+            <PlayerInfo playerName="Oponente" playerScore={scores.player2} position="opponent" />
+          </div>
           <PlayerHand cards={gameState.player2Hand} opponent={true} />
         </div>
 
-        {/* Mesa Central */}
+        {/* Mesa Central (sin cambios) */}
         <div className={styles.centerArea}>
-          {/* Mazo */}
           <motion.div
             className={styles.deckArea}
             whileTap={{ scale: 0.95 }}
@@ -146,66 +143,38 @@ function Board() {
             onClick={handleDrawFromDeck}
           >
             {[...Array(4)].map((_, i) => (
-              <motion.div
-                key={i}
-                className={styles.deckCard}
-                style={{ zIndex: i }}
-                animate={{ rotate: i % 2 === 0 ? i * 1.5 : -i * 1.5 }}
-              >
+              <motion.div key={i} className={styles.deckCard} style={{ zIndex: i }} animate={{ rotate: i % 2 === 0 ? i * 1.5 : -i * 1.5 }}>
                 <img src={imgBack} alt="Carta" />
               </motion.div>
             ))}
           </motion.div>
-
-          {/* Descarte */}
           <div id="discard-area" ref={discardRef} className={`${styles.discardPileSlot} ${discardImpact ? styles.activeImpact : ''}`}>
-            {gameState.discardPile.length > 0
-              ? <Card cardInfo={gameState.discardPile[0]} />
-              : <div className={styles.discardPlaceholder}></div>}
+            {gameState.discardPile.length > 0 ? <Card cardInfo={gameState.discardPile[0]} /> : <div className={styles.discardPlaceholder}></div>}
           </div>
-
-          {/* Botón Cortar */}
           <div id="cut-area" className={`${styles.cutSlot} ${canPlayerCut ? styles.activeCut : ''}`}>
-            Cortar
+            <span className={styles.cutSlotSymbol}>X</span>
           </div>
         </div>
 
-        {/* Mano del Jugador */}
+        {/* ZONA JUGADOR: Agrupamos la mano y la info */}
         <div className={styles.playerZone}>
           <PlayerHand cards={gameState.player1Hand} />
+          <div className={styles.playerInfo}>
+            <PlayerInfo playerName="Tú" playerScore={scores.player1} position="player" />
+          </div>
         </div>
 
-        {/* Info del Jugador */}
-        <div className={styles.playerInfo}>
-          <PlayerInfo playerName="Tú" playerScore={scores.player1} />
-        </div>
-
-        {/* Animación al robar carta */}
+        {/* Las animaciones de cartas se quedan fuera, lo cual es correcto */}
         <AnimatePresence>
           {lastDrawnCard && (
-            <motion.div
-              className={styles.tempCard}
-              initial={{ opacity: 1, scale: 0.8, y: -100 }}
-              animate={{ x: [0, 20, 0], y: [-100, -40, 0], rotate: [0, 8, 4], scale: [0.8, 1.05, 1] }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: 'easeInOut' }}
-              onAnimationComplete={handleDrawAnimationComplete}
-            >
+            <motion.div className={styles.tempCard} initial={{ opacity: 1, scale: 0.8, y: -100 }} animate={{ x: [0, 20, 0], y: [-100, -40, 0], rotate: [0, 8, 4], scale: [0.8, 1.05, 1] }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease: 'easeInOut' }} onAnimationComplete={handleDrawAnimationComplete}>
               <Card cardInfo={lastDrawnCard} />
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Animación al descartar */}
         <AnimatePresence>
           {lastPlayedCardPlayer && (
-            <motion.div
-              className={styles.tempCard}
-              initial={{ opacity: 1, scale: 1, y: 150 }}
-              animate={{ x: [0, discardTarget.x], y: [150, discardTarget.y], rotate: [0, 10, 5], scale: [1, 1.05, 1] }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: 'easeInOut' }}
-            >
+            <motion.div className={styles.tempCard} initial={{ opacity: 1, scale: 1, y: 150 }} animate={{ x: [0, discardTarget.x], y: [150, discardTarget.y], rotate: [0, 10, 5], scale: [1, 1.05, 1] }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease: 'easeInOut' }}>
               <Card cardInfo={lastPlayedCardPlayer} />
             </motion.div>
           )}
