@@ -1,6 +1,19 @@
 import React from 'react';
 import styles from './Card.module.css';
 
+// --- NOTA PARA TI ---
+// Para que tus imágenes de cartas funcionen, crea la siguiente estructura de carpetas
+// dentro de la carpeta `public` de tu proyecto:
+// public/
+// └── images/
+//     └── suits/
+//         ├── oros.png
+//         ├── copas.png
+//         ├── espadas.png
+//         └── bastos.png
+//
+// Vite servirá automáticamente estos archivos desde la raíz.
+
 // Devuelve la ruta de la imagen del palo
 function getSuitAsset(suit) {
   switch (suit) {

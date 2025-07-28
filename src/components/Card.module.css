@@ -1,62 +1,85 @@
+/* Contenedor principal de la carta. */
 .card {
-  width: 80px;
-  height: 120px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  /* Dimensiones de la carta. Ajusta estos valores para hacerlas más grandes o pequeñas. */
+  width: 95px;
+  height: 140px;
+  
   background-color: #fff;
+  border-radius: 12px; /* Un radio de borde más pronunciado para un look más moderno. */
+  border: 1px solid #e0e0e0;
+  
+  /* Sombra suave para dar profundidad. */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  
   color: #333;
-  position: relative;
+  font-weight: 700;
+  
+  /* Importante para posicionar los números y los palos. */
+  position: relative; 
+  
+  /* Flexbox para centrar el palo principal. */
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  font-weight: 700;
+  
+  /* Impide que el usuario seleccione el texto de la carta. */
   user-select: none;
+  
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
+/* Estilo para el reverso de la carta. */
 .cardBack {
-  background: linear-gradient(135deg, #8b0000, #4a0000);
+  background: linear-gradient(145deg, #8b0000, #4a0000);
   border: 2px solid #6a1b1b;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
+/* Estilos para los números de las esquinas. */
 .valueTop, .valueBottom {
   position: absolute;
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 1.25rem; /* Tamaño de la fuente para el valor. */
+  font-weight: 600;
+  color: #2c2c2c;
+  line-height: 1;
 }
 
 .valueTop {
-  top: 8px;
-  left: 10px;
+  top: 10px;
+  left: 12px;
 }
 
 .valueBottom {
-  bottom: 8px;
-  right: 10px;
+  bottom: 10px;
+  right: 12px;
+  /* Gira el número inferior para que se lea desde cualquier lado. */
   transform: rotate(180deg);
 }
 
+/* Contenedor para el palo y el nombre en el centro de la carta. */
 .suitContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .suitImage {
-  width: 28px;
-  height: 28px;
+  width: 38px; /* Tamaño del ícono del palo. */
+  height: 38px;
   object-fit: contain;
 }
 
 .suitName {
-  font-size: 0.7rem;
+  font-size: 0.75rem; /* Tamaño del texto del palo. */
   font-weight: 500;
   color: #555;
+  text-transform: uppercase; /* Pone el nombre del palo en mayúsculas. */
+  letter-spacing: 0.5px;
 }
 
-/* Estado de la carta al ser arrastrada */
+/* Clase que se aplica a SortableCard para controlar el estado de arrastre. */
 .sortableCard:active .card {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-  transform: scale(1.1);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  transform: scale(1.1) rotate(2deg); /* Efecto más pronunciado al arrastrar. */
 }

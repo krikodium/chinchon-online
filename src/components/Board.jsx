@@ -59,14 +59,17 @@ function Board() {
       handleCut();
       return;
     }
-
-    if (active.id !== over.id) {
-      setGameState(prev => {
-        const oldIndex = prev.player1Hand.findIndex(c => c.id === active.id);
-        const newIndex = prev.player1Hand.findIndex(c => c.id === over.id);
-        if (oldIndex === -1 || newIndex === -1 || !prev.player1Hand[newIndex]?.id) return prev;
-        return { ...prev, player1Hand: arrayMove(prev.player1Hand, oldIndex, newIndex) };
-      });
+    
+    // Asegurarse de que el reordenamiento solo ocurra dentro de la mano del jugador
+    if (active.id !== over.id && over.data.current?.sortable) {
+        setGameState(prev => {
+            const oldIndex = prev.player1Hand.findIndex(c => c.id === active.id);
+            const newIndex = prev.player1Hand.findIndex(c => c.id === over.id);
+            if (oldIndex > -1 && newIndex > -1) {
+                return { ...prev, player1Hand: arrayMove(prev.player1Hand, oldIndex, newIndex) };
+            }
+            return prev;
+        });
     }
   };
 
@@ -99,7 +102,6 @@ function Board() {
   const handleAutoSort = () => {
     setGameState(prev => {
       const { combinations, deadwood } = analyzeHand(prev.player1Hand);
-      // Ordena la mano poniendo primero las combinaciones y luego las cartas sueltas
       const sortedHand = [...combinations.flat(), ...deadwood];
       return { ...prev, player1Hand: sortedHand };
     });
@@ -113,31 +115,44 @@ function Board() {
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className={styles.gameBoard}>
 
+        {/* Zona Superior: Mano del Oponente */}
         <div className={styles.playerZone}>
-          <PlayerInfo playerName="Oponente" playerScore={scores.player2} isOpponent={true} />
           <PlayerHand cards={gameState.player2Hand} opponent={true} />
         </div>
-        
-        <div className={styles.centerArea}>
-          <div className={styles.deckArea} onClick={handleDrawFromDeck}>
-            <Card cardInfo={{ id: 'deck' }} />
+
+        {/* Zona Central: Mesa e Información de Jugadores */}
+        <div className={styles.tableContainer}>
+          <div className={styles.opponentInfoContainer}>
+            <PlayerInfo playerName="Oponente" playerScore={scores.player2} />
           </div>
-          <div id="discard-area" className={`${styles.discardPileSlot} ${isDroppable ? styles.highlightDrop : ''}`} onClick={handleDrawFromPile}>
-            {gameState.discardPile.length > 0 ? <Card cardInfo={gameState.discardPile[0]} /> : <div className={styles.discardPlaceholder}></div>}
-          </div>
-          {canPlayerCut && (
-            <div id="cut-area" className={`${styles.cutSlot} ${isDroppable ? styles.highlightDrop : ''}`}>
-              Cortar
+
+          <div className={styles.centerArea}>
+            <div className={styles.deckArea} onClick={handleDrawFromDeck}>
+              <Card cardInfo={{ id: 'deck' }} />
             </div>
-          )}
+            <div id="discard-area" className={`${styles.discardPileSlot} ${isDroppable ? styles.highlightDrop : ''}`} onClick={handleDrawFromPile}>
+              {gameState.discardPile.length > 0 
+                ? <Card cardInfo={gameState.discardPile[0]} /> 
+                : <div className={styles.discardPlaceholder}></div>
+              }
+            </div>
+            <div id="cut-area" className={`${styles.cutSlot} ${isDroppable && canPlayerCut ? styles.highlightDrop : ''}`}>
+               Cortar
+            </div>
+          </div>
+
+          <div className={styles.playerInfoContainer}>
+            <PlayerInfo playerName="Tú" playerScore={scores.player1} />
+            <button className={styles.sortButton} onClick={handleAutoSort}>🪄</button>
+          </div>
         </div>
 
+        {/* Zona Inferior: Mano del Jugador Principal */}
         <div className={styles.playerZone}>
-          <PlayerInfo playerName="Tú" playerScore={scores.player1} />
-          <button className={styles.sortButton} onClick={handleAutoSort}>🪄</button>
           <PlayerHand cards={gameState.player1Hand} />
         </div>
 
+        {/* Carta que se anima al robar del mazo */}
         <AnimatePresence>
           {lastDrawnCard && ( <motion.div className={styles.tempCard} initial={{ opacity: 0, scale: 0.5, y: -200, x: "-50%" }} animate={{ opacity: 1, scale: 1, y: 0, x: '-50%' }} exit={{ opacity: 0 }} transition={{ duration: 0.5, ease: 'easeOut' }} onAnimationComplete={handleDrawAnimationComplete}> <Card cardInfo={lastDrawnCard} /> </motion.div> )}
         </AnimatePresence>

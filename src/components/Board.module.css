@@ -1,102 +1,146 @@
+/* --- Contenedor Principal del Tablero --- */
 .gameBoard {
-  width: 100%;
-  min-height: 100vh;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  width: 100vw;
+  height: 100vh;
   padding: 16px;
   overflow: hidden;
 
-  /* --- ESTILOS DE FONDO MEJORADOS --- */
-  background-color: #301934; /* Un púrpura oscuro como base */
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(138, 43, 226, 0.2) 0%, transparent 40%),
-    radial-gradient(circle at 85% 90%, rgba(75, 0, 130, 0.25) 0%, transparent 50%);
-  background-repeat: no-repeat;
-}
-
-.playerZone {
-  width: 100%;
-  max-width: 450px;
+  /* Usamos Flexbox para la estructura principal. */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  position: relative;
+  
+  /* `justify-content: center` asegura que todo el bloque del juego 
+     (manos y mesa) esté centrado verticalmente en la pantalla. */
+  justify-content: center;
+  
+  /* Un gap para dar un respiro entre las zonas de las manos y la mesa. */
+  gap: 15px;
+
+  /* Estilos de fondo. */
+  background-color: #2c1a3e;
+  background-image:
+    radial-gradient(circle at 15% 15%, rgba(74, 45, 106, 0.4) 0%, transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(75, 0, 130, 0.3) 0%, transparent 50%);
 }
 
-.sortButton {
+/* --- Zonas de las Manos (Arriba y Abajo) --- */
+.playerZone {
+  width: 100%;
+  max-width: 500px;
+  /* Se le da una altura fija para definir el espacio que ocupan las manos,
+     empujando a la mesa central y evitando que se encimen. */
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- Contenedor de la Mesa Central --- */
+.tableContainer {
+  /* La posición relativa es VITAL para anclar los paneles de información. */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Se le da una altura para que los paneles posicionados no colapsen. */
+  height: 180px; 
+}
+
+/* --- Paneles de Información (Sobre la Mesa) --- */
+.opponentInfoContainer,
+.playerInfoContainer {
   position: absolute;
-  top: 0;
-  right: 20px;
-  width: 40px;
-  height: 40px;
+  z-index: 20; /* Se asegura que estén por encima de la mesa. */
+}
+
+.opponentInfoContainer {
+  top: -28px; /* Lo "saca" por arriba. */
+  right: 50%;
+  transform: translateX(180px); /* Lo mueve hacia la derecha del centro. */
+}
+
+.playerInfoContainer {
+  bottom: -28px; /* Lo "saca" por abajo. */
+  left: 50%;
+  transform: translateX(-180px); /* Lo mueve hacia la izquierda para el efecto espejo. */
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* --- Tablero Central (Mazo, Descarte, Corte) --- */
+.centerArea {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 25px;
+  padding: 18px 22px;
+  min-width: 380px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  z-index: 10; /* Debe estar por debajo de los paneles de info. */
+}
+
+/* Estilos para los 3 slots de la mesa. */
+.deckArea,
+.discardPileSlot,
+.cutSlot {
+  width: 95px;
+  height: 140px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Estilo para el slot de "Cortar" y el placeholder del descarte. */
+.discardPlaceholder,
+.cutSlot {
+  border: 2.5px dashed rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.cutSlot:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.highlightDrop {
+  outline: 4px solid #66bb6a;
+  border-color: transparent !important;
+  transform: scale(1.03);
+}
+
+/* Botón de ordenar. */
+.sortButton {
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: all 0.2s ease;
-  z-index: 10;
 }
 .sortButton:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.2);
   transform: scale(1.1);
 }
 
-.centerArea {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 20px;
-  padding: 20px;
-  width: auto;
-  min-width: 320px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.deckArea,
-.discardPileSlot,
-.cutSlot {
-  width: 80px;
-  height: 120px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cutSlot {
-  border: 2px dashed rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.9rem;
-}
-
-.highlightDrop {
-  outline: 3px dashed #66bb6a;
-}
-
-.discardPlaceholder {
-  width: 100%;
-  height: 100%;
-  border: 2px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-}
-
+/* Animación de carta robada. */
 .tempCard {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 200;
+  z-index: 999;
 }

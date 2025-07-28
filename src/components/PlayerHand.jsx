@@ -12,7 +12,8 @@ function PlayerHand({ cards = [], opponent = false }) {
         {cards.map((card, index) => {
           const offset = index - middleIndex;
           const style = {
-            transform: `rotate(${offset * 5}deg) translateY(-15%)`,
+            /* Aumentamos el ángulo de rotación para un abanico más abierto */
+            transform: `rotate(${offset * 8}deg) translateY(-20%)`,
             zIndex: cards.length - Math.abs(offset),
           };
           return (
@@ -25,6 +26,8 @@ function PlayerHand({ cards = [], opponent = false }) {
     );
   }
 
+  // --- CORRECCIÓN APLICADA AQUÍ ---
+  // Ahora se divide en 4 cartas para la fila de arriba y el resto para la de abajo.
   const topRowCards = cards.slice(0, 4);
   const bottomRowCards = cards.slice(4);
 

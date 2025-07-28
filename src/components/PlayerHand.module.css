@@ -2,26 +2,47 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Aumentamos el solapamiento vertical de las filas */
-  gap: -85px; 
+  /* El solapamiento vertical es clave. 
+     Este valor negativo "junta" las dos filas de cartas. 
+     Ajusta este valor en pequeños incrementos si necesitas más o menos espacio. */
+  gap: -130px; 
 }
 
-.opponentHandContainer,
+/* Contenedor general para una fila de cartas, ya sea del jugador o del oponente. */
 .handRow {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 160px; 
-  padding: 20px;
+  /* La altura define el espacio vertical que ocupa la fila, 
+     lo que ayuda a controlar cómo se superponen con otras zonas. */
+  height: 170px; 
+  padding: 15px 20px;
 }
 
+/* Este es el contenedor individual de cada carta. 
+  Lo usamos para aplicar transformaciones sin afectar directamente a la carta.
+*/
 .cardWrapper {
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              margin 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
 }
 
-/* El truco para el solapamiento estable: margen negativo */
+/* Este es el selector más importante para el efecto de "abanico".
+  Aplica un margen negativo a todas las cartas excepto a la primera de la fila,
+  haciendo que se superpongan una encima de la otra.
+*/
 .cardWrapper:not(:first-child) {
-  /* Aumentamos el solapamiento horizontal */
-  margin-left: -60px; 
+  /* Un valor más negativo significa más superposición (cartas más juntas).
+     Un valor menos negativo significa menos superposición (cartas más separadas). */
+  margin-left: -82px; 
+}
+
+/*
+  Al pasar el ratón por encima, levantamos la carta para dar feedback visual.
+  El `z-index` asegura que se muestre por encima de sus hermanas.
+*/
+.cardWrapper:hover {
+  transform: translateY(-20px) scale(1.05);
+  z-index: 100;
 }
