@@ -4,19 +4,17 @@ import SortableCard from './SortableCard';
 import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
 import { motion } from 'framer-motion';
 
-function PlayerHand({ cards = [], opponent = false }) {
+function PlayerHand({ cards = [], opponent = false, draggingCardId }) {
   
-  // --- FUNCIÓN DE ESTILO DEL ABANICO (AJUSTE DE PRECISIÓN) ---
   const getFanStyle = (index, total, isTopRow = true) => {
     const mid = (total - 1) / 2;
     const offset = index - mid;
 
-    // Lógica específica para el oponente
+    // Lógica para el oponente (sin cambios)
     if (opponent) {
-      const angle = offset * 8; // 2. Ángulo ligeramente más suave
-      const translateX = offset * -20; // 1. Abanico más compacto para que entren las 7 cartas
+      const angle = offset * 8;
+      const translateX = offset * -20;
       const translateY = Math.abs(offset) * 3; 
-
       return {
         transform: `translateX(${translateX}px) translateY(${translateY}px) rotate(${angle}deg)`,
         zIndex: 10 - Math.abs(offset),
@@ -24,10 +22,10 @@ function PlayerHand({ cards = [], opponent = false }) {
       };
     }
 
-    // Lógica para el jugador (sin cambios)
-    const angle = offset * 6;
+    // Lógica del abanico para el jugador (restaurada y funcional)
+    const angle = offset * 5;
     const translateY = Math.abs(offset) * 4;
-    let finalTranslateY = isTopRow ? -translateY : translateY;
+    const finalTranslateY = isTopRow ? -translateY : translateY;
 
     return {
       transform: `rotate(${angle}deg) translateY(${finalTranslateY}px)`,
@@ -35,30 +33,15 @@ function PlayerHand({ cards = [], opponent = false }) {
     };
   };
 
-  // --- CONFIGURACIÓN DE ANIMACIONES (Sin cambios) ---
   const cardVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.98 },
     visible: (index) => ({
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: 'spring',
-        damping: 15,
-        stiffness: 300,
-        delay: index * 0.05,
-      },
+      opacity: 1, y: 0, scale: 1,
+      transition: { type: 'spring', damping: 15, stiffness: 300, delay: index * 0.05 },
     }),
   };
 
-  const whileDragAnimation = {
-    scale: 1.12,
-    rotate: 3,
-    zIndex: 999,
-    boxShadow: '0 10px 20px rgba(0,0,0,0.25)',
-  };
-
-  // --- RENDERIZADO DEL OPONENTE ---
+  // --- RENDERIZADO DEL OPONENTE (sin cambios) ---
   if (opponent) {
     return (
       <div className={styles.opponentRow}>
@@ -67,14 +50,11 @@ function PlayerHand({ cards = [], opponent = false }) {
             <motion.div
               key={card.id}
               className={styles.cardWrapper}
-              style={getFanStyle(index, cards.length, false)} // La magia ocurre aquí
+              style={getFanStyle(index, cards.length, false)}
               custom={index}
               initial="hidden"
               animate="visible"
-              variants={{
-                ...cardVariants,
-                hidden: { opacity: 0, y: -20, scale: 0.98 }
-              }}
+              variants={{ ...cardVariants, hidden: { opacity: 0, y: -20, scale: 0.98 } }}
             >
               <SortableCard card={{ ...card, isOpponentCard: true }} />
             </motion.div>
@@ -84,38 +64,44 @@ function PlayerHand({ cards = [], opponent = false }) {
     );
   }
 
-  // --- RENDERIZADO DEL JUGADOR (Sin cambios) ---
-  const topRow = cards.slice(0, 4);
-  const bottomRow = cards.slice(4);
+  // --- RENDERIZADO DEL JUGADOR (CORREGIDO CON DOS FILAS Y UN SOLO CONTEXTO) ---
+  const topRowCards = cards.slice(0, 4);
+  const bottomRowCards = cards.slice(4);
 
   const renderRow = (rowCards, isTopRow) => (
-    <div
-      className={isTopRow ? styles.playerTopRow : styles.playerBottomRow}
-    >
-      <SortableContext items={rowCards.map(c => c.id)} strategy={horizontalListSortingStrategy}>
-        {rowCards.map((card, index) => (
+    <div className={isTopRow ? styles.playerTopRow : styles.playerBottomRow}>
+      {rowCards.map((card, index) => {
+        const isDragging = draggingCardId === card.id;
+        const style = getFanStyle(index, rowCards.length, isTopRow);
+        const wrapperStyle = {
+          ...style,
+          zIndex: isDragging ? 9999 : style.zIndex,
+        };
+        return (
           <motion.div
             key={card.id}
             className={styles.cardWrapper}
-            style={getFanStyle(index, rowCards.length, isTopRow)}
+            style={wrapperStyle}
             custom={index}
             initial="hidden"
             animate="visible"
             variants={cardVariants}
-            layout
-            whileDrag={whileDragAnimation}
+            layout // La propiedad layout es clave para la animación de reordenamiento
           >
             <SortableCard card={card} />
           </motion.div>
-        ))}
-      </SortableContext>
+        );
+      })}
     </div>
   );
 
   return (
     <div className={styles.playerHandContainer}>
-      {renderRow(topRow, true)}
-      {bottomRow.length > 0 && renderRow(bottomRow, false)}
+      {/* El contexto único envuelve ambas filas, permitiendo arrastrar entre ellas */}
+      <SortableContext items={cards.map(c => c.id)} strategy={horizontalListSortingStrategy}>
+        {renderRow(topRowCards, true)}
+        {bottomRowCards.length > 0 && renderRow(bottomRowCards, false)}
+      </SortableContext>
     </div>
   );
 }

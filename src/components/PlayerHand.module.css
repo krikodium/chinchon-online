@@ -11,7 +11,7 @@
   overflow: visible;
 }
 
-/* === FILA SUPERIOR E INFERIOR DEL JUGADOR === */
+/* === FILAS DEL JUGADOR (RESTAURADAS) === */
 .playerTopRow, .playerBottomRow {
   display: flex;
   justify-content: center;
@@ -25,39 +25,36 @@
   align-items: flex-start;
 }
 
-/* === FILA DEL OPONENTE (CORREGIDA PARA MÓVIL) === */
+/* === FILA DEL OPONENTE (Sin cambios) === */
 .opponentRow {
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: flex-end;
   width: 100%;
-  height: 95px; /* Altura para móvil */
+  height: 95px;
   position: relative;
   padding: 0 10px;
 }
 
-/* === CARTA (TAMAÑO MÓVIL CORREGIDO) === */
+/* === CARTA === */
 .cardWrapper {
-  width: 75px; /* Ancho reducido para móvil */
-  height: 106px; /* Alto reducido para móvil */
+  width: 75px;
+  height: 106px;
   transform-origin: bottom center;
   transition: transform 0.3s ease;
   flex-shrink: 0;
-  margin-right: 5%;
-  /* Se elimina el margin-right: 5% para usar un método de superposición más controlado */
 }
 
-/* === ABANICO PARA OPONENTE Y JUGADOR (NUEVO) === */
-/* Hacemos el abanico del oponente más compacto en móvil */
+/* === ABANICO PARA OPONENTE Y JUGADOR === */
 .opponentRow .cardWrapper:not(:first-child) {
   margin-left: -48px; 
 }
 
-/* Aplicamos el mismo efecto a las filas del jugador */
+/* Aplicamos el efecto de superposición a cada fila del jugador */
 .playerTopRow .cardWrapper:not(:first-child),
 .playerBottomRow .cardWrapper:not(:first-child) {
-  margin-left: -35px; /* Un poco menos de superposición para el jugador */
+  margin-left: -35px;
 }
 
 
@@ -68,7 +65,7 @@
 }
 
 
-/* === TABLET Y DESKTOP (Ajustes para pantallas más grandes) === */
+/* === TABLET Y DESKTOP === */
 @media (min-width: 768px) {
   .playerTopRow, .playerBottomRow {
     height: 130px;
@@ -78,11 +75,11 @@
     padding: 0 20px;
   }
   .cardWrapper {
-    width: 80px; /* Restauramos el tamaño para pantallas más grandes */
+    width: 80px;
     height: 116px;
   }
   .opponentRow .cardWrapper:not(:first-child) {
-    margin-left: -50px; /* Ajustamos la superposición para el nuevo tamaño */
+    margin-left: -50px;
   }
   .playerTopRow .cardWrapper:not(:first-child),
   .playerBottomRow .cardWrapper:not(:first-child) {
@@ -99,7 +96,7 @@
     padding: 0 40px;
   }
   .cardWrapper {
-    width: 90px; /* Cartas aún más grandes para desktop */
+    width: 90px;
     height: 130px;
   }
   .opponentRow .cardWrapper:not(:first-child) {
