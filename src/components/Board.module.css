@@ -8,20 +8,29 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-between; /* Mantiene los elementos principales distribuidos verticalmente */
   align-items: center;
   background: radial-gradient(circle at center, #1a0d2d 0%, #0f071a 100%);
   overflow: hidden;
   position: relative;
-  padding: 24px 16px;
+  padding: 16px;
   box-sizing: border-box;
 }
 
 /*
 =================================================================
-  MENÚ DE HAMBURGUESA
+  Contenedores Superiores e Inferiores
 =================================================================
 */
+.topNav {
+  width: 100%;
+  height: 40px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 200;
+}
+
 .hamburgerMenu {
   width: 30px;
   height: 25px;
@@ -30,9 +39,9 @@
   justify-content: space-between;
   cursor: pointer;
   position: absolute;
-  top: 24px;
-  right: 24px;
-  z-index: 100;
+  top: 20px;
+  right: 20px;
+  z-index: 201;
 }
 
 .hamburgerMenu span {
@@ -42,18 +51,61 @@
   border-radius: 2px;
 }
 
+/* Contenedores para las manos */
+.opponentHandArea, .playerHandArea {
+  width: 100%;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.opponentHandArea {
+    flex-grow: 1; /* Ocupa el espacio superior disponible */
+    align-items: flex-start; /* Alinea la mano arriba */
+    padding-top: 40px; /* Espacio para que no choque con la barra de navegación */
+}
+
+.playerHandArea {
+    flex-grow: 1; /* Ocupa el espacio inferior disponible */
+    align-items: flex-end; /* Alinea la mano abajo */
+}
+
+
 /*
 =================================================================
-  CONTENEDOR DE LA MESA CENTRAL
+  ÁREA CENTRAL DE JUEGO (MESA DE CARTAS)
 =================================================================
 */
 .tableWrapper {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
-  gap: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.centerArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  min-height: 180px;
+  background: rgba(25, 20, 40, 0.75);
+  border-radius: 20px;
+  padding: 16px;
+  border: 1px solid rgba(158, 86, 255, 0.25);
+  box-shadow: 0 0 12px rgba(158, 86, 255, 0.35);
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+.cardSlots {
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 /*
@@ -62,195 +114,82 @@
 =================================================================
 */
 .infoContainer {
-  width: fit-content;
+  position: absolute;
+  z-index: 15;
 }
 
 .opponentInfo {
-  align-self: flex-end;
+  top: -30px;
+  right: 10%;
 }
 
 .playerInfo {
-  align-self: flex-start;
+  bottom: -30px;
+  left: 10%;
 }
 
 /*
 =================================================================
-  ÁREA CENTRAL DE JUEGO (MESA DE CARTAS)
+  ZONAS DE CARTAS (MAZO, DESCARTE, CORTE)
 =================================================================
 */
-.centerArea {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  align-self: center;
-  gap: 16px;
-  width: auto;
-  background: rgba(25, 20, 40, 0.65);
-  border-radius: 14px;
-  padding: 12px 14px;
-  border: 1px solid rgba(158, 86, 255, 0.25);
-  box-shadow: 0 0 12px rgba(158, 86, 255, 0.35);
-  backdrop-filter: blur(12px);
-  z-index: 10;
-  position: relative;
-}
-
-/*
-=================================================================
-  EFECTO DE BRILLO NEÓN ANIMADO
-=================================================================
-*/
-.centerArea::before {
-  content: '';
-  position: absolute;
-  width: 160%;
-  height: 160%;
-  top: -30%;
-  left: -30%;
-  background: radial-gradient(circle, rgba(158, 86, 255, 0.15), transparent 70%);
-  z-index: -1;
-  animation: neonPulse 3s infinite ease-in-out;
-}
-
-@keyframes neonPulse {
-  0%, 100% {
-    opacity: 0.35;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.65;
-    transform: scale(1.05);
-  }
-}
-
-/*
-=================================================================
-  ZONAS DE CARTAS (TAMAÑO AUMENTADO, SIN AGRUPAR)
-=================================================================
-*/
-
-/* Estilos para la zona del mazo de cartas */
-.deckArea {
-  width: 75px;
-  height: 110px;
-  position: relative;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-/* Estilos para la pila de descarte */
-.discardPileSlot {
-  width: 75px;
-  height: 110px;
-  position: relative;
-  cursor: pointer;
-  flex-shrink: 0;
-  border: 2px dashed rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  transition: transform 0.3s ease;
-}
-
-/* Estilos para la zona de corte */
+.deckArea,
+.discardPileSlot,
 .cutSlot {
-  width: 75px;
-  height: 110px;
+  width: 70px;
+  height: 105px;
   position: relative;
   cursor: pointer;
   flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.deckArea img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.discardPileSlot,
+.cutSlot {
   border: 2px dashed rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
+  font-size: 2.5rem;
+  color: rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
 }
 
-/*
-=================================================================
-  ESTILOS PARA LAS CARTAS DEL MAZO
-=================================================================
-*/
-.deckCard {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-.deckCard img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 6px;
-}
-
-.deckCard:nth-child(1) {
-  transform: translate(0px, 0px) rotate(-3deg);
-}
-.deckCard:nth-child(2) {
-  transform: translate(3px, 2px) rotate(-1deg);
-}
-.deckCard:nth-child(3) {
-  transform: translate(6px, 4px) rotate(1deg);
-}
-.deckCard:nth-child(4) {
-  transform: translate(9px, 6px) rotate(0deg);
-}
-
-/*
-=================================================================
-  ESTADOS ACTIVOS Y DE HOVER
-=================================================================
-*/
-.discardPileSlot.activeImpact {
-  transform: scale(1.08);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
-}
-
-.cutSlotSymbol {
-  font-size: 3rem;
-  line-height: 1;
-}
-
+.cutSlot:hover,
 .cutSlot.activeCut {
   background: rgba(158, 86, 255, 0.15);
   color: #fff;
   border-color: rgba(158, 86, 255, 0.6);
 }
 
-.cutSlot:hover {
-  background: rgba(158, 86, 255, 0.15);
-  color: #fff;
-  border-color: rgba(158, 86, 255, 0.6);
-}
-
 /*
 =================================================================
-  DISEÑO RESPONSIVE (TABLET Y ESCRITORIO)
+  DISEÑO RESPONSIVE
 =================================================================
 */
-@media (min-width: 768px) {
-  /* Aumento de tamaño para el mazo */
-  .deckArea {
-    width: 85px;
-    height: 125px;
-  }
-
-  /* Aumento de tamaño para la pila de descarte */
-  .discardPileSlot {
-    width: 85px;
-    height: 125px;
-  }
-
-  /* Aumento de tamaño para la zona de corte */
+@media (min-width: 450px) {
+  .deckArea,
+  .discardPileSlot,
   .cutSlot {
     width: 85px;
     height: 125px;
   }
+}
 
-  /* Aumento de tamaño para el símbolo de corte */
-  .cutSlotSymbol {
-    font-size: 3.5rem;
-  }
+/*
+=================================================================
+  CARTA EN ANIMACIÓN - PROFESIONAL
+=================================================================
+*/
+.animatingCard {
+  position: fixed; /* <<<<<< CLAVE 1: La carta se "desprende" del layout normal */
+  z-index: 9999;   /* <<<<<< CLAVE 2: Se asegura de que esté por encima de todo */
+  pointer-events: none; /* Evita que interfiera con el mouse durante la animación */
 }

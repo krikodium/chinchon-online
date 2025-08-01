@@ -6,30 +6,18 @@ import { motion } from 'framer-motion';
 
 function PlayerHand({ cards = [], opponent = false, draggingCardId }) {
   
-  const getFanStyle = (index, total, isTopRow = true) => {
+  // --- LÓGICA DEL ABANICO MÁS PRONUNCIADO ---
+  const getCardStyle = (index, total) => {
     const mid = (total - 1) / 2;
     const offset = index - mid;
-
-    // Lógica para el oponente (sin cambios)
-    if (opponent) {
-      const angle = offset * 8;
-      const translateX = offset * -20;
-      const translateY = Math.abs(offset) * 3; 
-      return {
-        transform: `translateX(${translateX}px) translateY(${translateY}px) rotate(${angle}deg)`,
-        zIndex: 10 - Math.abs(offset),
-        position: 'relative', 
-      };
-    }
-
-    // Lógica del abanico para el jugador (restaurada y funcional)
-    const angle = offset * 5;
-    const translateY = Math.abs(offset) * 4;
-    const finalTranslateY = isTopRow ? -translateY : translateY;
+    // Aumentamos los valores para un abanico más notable
+    const angle = offset * 8; // Mayor rotación para cada carta
+    const translateY = Math.abs(offset) * 6; // Mayor elevación para formar el arco
 
     return {
-      transform: `rotate(${angle}deg) translateY(${finalTranslateY}px)`,
-      zIndex: 10 - Math.abs(offset),
+      transform: `rotate(${angle}deg) translateY(-${translateY}px)`,
+      zIndex: total - Math.abs(offset), // Las cartas del centro quedan por encima
+      position: 'relative',
     };
   };
 
@@ -41,7 +29,7 @@ function PlayerHand({ cards = [], opponent = false, draggingCardId }) {
     }),
   };
 
-  // --- RENDERIZADO DEL OPONENTE (sin cambios) ---
+  // --- RENDERIZADO DEL OPONENTE (Sin cambios) ---
   if (opponent) {
     return (
       <div className={styles.opponentRow}>
@@ -50,7 +38,7 @@ function PlayerHand({ cards = [], opponent = false, draggingCardId }) {
             <motion.div
               key={card.id}
               className={styles.cardWrapper}
-              style={getFanStyle(index, cards.length, false)}
+              style={{ zIndex: index }}
               custom={index}
               initial="hidden"
               animate="visible"
@@ -64,43 +52,47 @@ function PlayerHand({ cards = [], opponent = false, draggingCardId }) {
     );
   }
 
-  // --- RENDERIZADO DEL JUGADOR (CORREGIDO CON DOS FILAS Y UN SOLO CONTEXTO) ---
+  // --- LÓGICA DE DOS FILAS PARA EL JUGADOR ---
   const topRowCards = cards.slice(0, 4);
   const bottomRowCards = cards.slice(4);
 
-  const renderRow = (rowCards, isTopRow) => (
-    <div className={isTopRow ? styles.playerTopRow : styles.playerBottomRow}>
-      {rowCards.map((card, index) => {
+  const renderRow = (rowCards) => (
+      rowCards.map((card, index) => {
         const isDragging = draggingCardId === card.id;
-        const style = getFanStyle(index, rowCards.length, isTopRow);
-        const wrapperStyle = {
-          ...style,
-          zIndex: isDragging ? 9999 : style.zIndex,
-        };
+        const style = getCardStyle(index, rowCards.length);
+        
         return (
           <motion.div
             key={card.id}
-            className={styles.cardWrapper}
-            style={wrapperStyle}
+            className={`${styles.cardWrapper} ${isDragging ? styles.dragging : ''}`}
+            style={style}
             custom={index}
             initial="hidden"
             animate="visible"
             variants={cardVariants}
-            layout // La propiedad layout es clave para la animación de reordenamiento
+            layout
           >
             <SortableCard card={card} />
           </motion.div>
         );
-      })}
-    </div>
+      })
   );
 
   return (
     <div className={styles.playerHandContainer}>
-      {/* El contexto único envuelve ambas filas, permitiendo arrastrar entre ellas */}
+      {/* El contexto único envuelve ambas filas para permitir arrastrar entre ellas */}
       <SortableContext items={cards.map(c => c.id)} strategy={horizontalListSortingStrategy}>
-        {renderRow(topRowCards, true)}
-        {bottomRowCards.length > 0 && renderRow(bottomRowCards, false)}
+        
+        <div className={styles.playerTopRow}>
+            {renderRow(topRowCards)}
+        </div>
+        
+        {bottomRowCards.length > 0 && (
+            <div className={styles.playerBottomRow}>
+                {renderRow(bottomRowCards)}
+            </div>
+        )}
+
       </SortableContext>
     </div>
   );

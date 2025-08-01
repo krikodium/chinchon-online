@@ -1,109 +1,102 @@
-/* === CONTENEDOR GENERAL DEL JUGADOR === */
+/*
+=================================================================
+  CONTENEDOR GENERAL DEL JUGADOR
+=================================================================
+*/
 .playerHandContainer {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* Espacio entre las dos filas del jugador */
+  gap: 0;
   margin: 0 auto;
   padding: 0;
   overflow: visible;
 }
 
-/* === FILAS DEL JUGADOR (RESTAURADAS) === */
+/*
+=================================================================
+  FILAS DEL JUGADOR
+=================================================================
+*/
 .playerTopRow, .playerBottomRow {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   width: 100%;
-  height: 110px; /* Altura para móvil */
+  /* La altura se adapta al contenido, pero le damos un mínimo */
+  min-height: 100px;
   position: relative;
 }
 
-.playerBottomRow {
-  align-items: flex-start;
-}
-
-/* === FILA DEL OPONENTE (Sin cambios) === */
+/*
+=================================================================
+  FILA DEL OPONENTE
+=================================================================
+*/
 .opponentRow {
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: flex-end;
   width: 100%;
-  height: 95px;
+  min-height: 95px;
   position: relative;
   padding: 0 10px;
 }
 
-/* === CARTA === */
+/*
+=================================================================
+  CARTA (WRAPPER) - EL CORAZÓN DE LA RESPONSIVIDAD
+=================================================================
+*/
 .cardWrapper {
-  width: 75px;
-  height: 106px;
-  transform-origin: bottom center;
-  transition: transform 0.3s ease;
+  /*
+    TÉCNICA AVANZADA: clamp(MIN, VAL, MAX)
+    Esto hace que el tamaño sea fluido. Crecerá con el ancho de la pantalla (8vw),
+    pero nunca será más pequeño que 85px ni más grande que 110px.
+    ¡Adiós a los saltos bruscos!
+  */
+  width: clamp(85px, 8vw, 110px);
+  height: clamp(122px, 11.5vw, 158px);
+  
+  transition: transform 0.2s ease-out;
   flex-shrink: 0;
+  position: relative;
+  transform-origin: bottom center;
 }
 
-/* === ABANICO PARA OPONENTE Y JUGADOR === */
+/*
+=================================================================
+  SOLAPAMIENTO DE CARTAS - FLUIDO Y RESPONSIVO
+=================================================================
+*/
 .opponentRow .cardWrapper:not(:first-child) {
-  margin-left: -48px; 
+  /* Usamos clamp() también para el solapamiento */
+  margin-left: clamp(-60px, -5vw, -45px);
 }
 
-/* Aplicamos el efecto de superposición a cada fila del jugador */
 .playerTopRow .cardWrapper:not(:first-child),
 .playerBottomRow .cardWrapper:not(:first-child) {
-  margin-left: -35px;
+  /* Un solapamiento ligeramente menor para el jugador */
+  margin-left: clamp(-50px, -4vw, -35px);
+}
+
+/* Solapamiento vertical entre las filas del jugador */
+.playerBottomRow {
+  /* Usamos clamp() para que la superposición también sea fluida */
+  margin-top: clamp(-85px, -7vw, -65px);
 }
 
 
-/* === EFECTO DRAG DE CARTA === */
+/*
+=================================================================
+  EFECTO DRAG DE CARTA
+=================================================================
+*/
 .cardWrapper.dragging {
-  z-index: 999;
-  transform: scale(1.15) !important;
-}
-
-
-/* === TABLET Y DESKTOP === */
-@media (min-width: 768px) {
-  .playerTopRow, .playerBottomRow {
-    height: 130px;
-  }
-  .opponentRow {
-    height: 120px;
-    padding: 0 20px;
-  }
-  .cardWrapper {
-    width: 80px;
-    height: 116px;
-  }
-  .opponentRow .cardWrapper:not(:first-child) {
-    margin-left: -50px;
-  }
-  .playerTopRow .cardWrapper:not(:first-child),
-  .playerBottomRow .cardWrapper:not(:first-child) {
-    margin-left: -45px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .playerTopRow, .playerBottomRow {
-    height: 160px;
-  }
-  .opponentRow {
-    height: 140px;
-    padding: 0 40px;
-  }
-  .cardWrapper {
-    width: 90px;
-    height: 130px;
-  }
-  .opponentRow .cardWrapper:not(:first-child) {
-    margin-left: -60px;
-  }
-  .playerTopRow .cardWrapper:not(:first-child),
-  .playerBottomRow .cardWrapper:not(:first-child) {
-    margin-left: -55px;
-  }
+  z-index: 9999 !important;
+  transform: scale(1.2) !important; /* Un poco más grande para destacar */
+  box-shadow: 0 15px 30px rgba(0,0,0,0.4);
 }

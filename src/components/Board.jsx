@@ -80,17 +80,16 @@ function Board() {
     }
   }, [gameState?.player1Hand, turnPhase]);
   
-  // --- useEffect MODIFICADO para un flujo de IA más robusto ---
   useEffect(() => {
     if (turnPhase === 'opponent_turn') {
       setGameMessage('Turno del Oponente');
-      const timer = setTimeout(() => runOpponentDraw(), 1000); // Inicia con el robo
+      const timer = setTimeout(() => runOpponentDraw(), 1000);
       return () => clearTimeout(timer);
     }
-  }, [turnPhase]);
+  }, [turnPhase, gameState]);
 
   const getElementPosition = (ref) => {
-    if (!ref.current) return { top: 0, left: 0, width: 0, height: 0 };
+    if (!ref.current) return { top: 0, left: 0, width: 0, height: 0, right: 0, bottom: 0 };
     return ref.current.getBoundingClientRect();
   };
 
@@ -98,37 +97,44 @@ function Board() {
     if (turnPhase !== 'draw' || animatingCard) return;
     const isDeck = source === 'deck';
 
-    if (isDeck && gameState.deck.length === 0) return;
-    if (!isDeck && gameState.discardPile.length === 0) return;
+    if ((isDeck && gameState.deck.length === 0) || (!isDeck && gameState.discardPile.length === 0)) return;
 
     const drawnCard = isDeck ? gameState.deck[0] : gameState.discardPile[0];
     const originRef = isDeck ? deckRef : discardRef;
     
+    const originRect = getElementPosition(originRef);
+    const destinationRect = getElementPosition(playerHandRef);
+
+    // *** CORRECCIÓN CLAVE: Actualizamos el estado INMEDIATAMENTE ***
+    setGameState(prevState => {
+        const newPlayerHand = [...prevState.player1Hand, drawnCard];
+        const newDeck = isDeck ? prevState.deck.filter(c => c.id !== drawnCard.id) : prevState.deck;
+        const newDiscardPile = !isDeck ? prevState.discardPile.filter(c => c.id !== drawnCard.id) : prevState.discardPile;
+        return {
+            ...prevState,
+            deck: newDeck,
+            discardPile: newDiscardPile,
+            player1Hand: newPlayerHand,
+        };
+    });
+    setTurnPhase('discard');
+    setGameMessage('Tu turno para descartar');
+
+    // La animación ahora es puramente visual
     setAnimatingCard({
       card: drawnCard,
-      origin: getElementPosition(originRef),
-      destination: getElementPosition(playerHandRef),
+      origin: originRect,
+      destination: {
+          x: destinationRect.left + destinationRect.width / 2,
+          y: destinationRect.top + destinationRect.height / 2,
+      },
+      // El onComplete solo limpia la animación, ya no modifica el estado
       onComplete: () => {
-        setGameState(prevState => {
-          const sourcePile = isDeck ? prevState.deck : prevState.discardPile;
-          if (sourcePile.length === 0) return prevState;
-          const cardToAdd = sourcePile[0];
-          const newSourcePile = sourcePile.slice(1);
-          const newPlayerHand = [...prevState.player1Hand, cardToAdd];
-          return {
-            ...prevState,
-            deck: isDeck ? newSourcePile : prevState.deck,
-            discardPile: !isDeck ? newSourcePile : prevState.discardPile,
-            player1Hand: newPlayerHand,
-          };
-        });
         setAnimatingCard(null);
-        setTurnPhase('discard');
-        setGameMessage('Tu turno para descartar');
       }
     });
   };
-
+  
   const handleCut = () => {
     if (!canPlayerCut || animatingCard) return;
     
@@ -146,8 +152,6 @@ function Board() {
     setGameMessage(`Fin de la ronda.`);
   };
 
-  // --- LÓGICA DE IA MODIFICADA Y SEPARADA EN DOS PASOS ---
-
   const runOpponentDraw = () => {
     const { player2Hand, deck, discardPile } = gameState;
     const topDiscardCard = discardPile.length > 0 ? discardPile[0] : null;
@@ -163,20 +167,27 @@ function Board() {
         setGameMessage('Mazo vacío. Tu turno.');
         return; 
     }
+    
+    const originRect = getElementPosition(sourceRef);
+    const destinationRect = getElementPosition(opponentHandRef);
+
+    // *** MISMA CORRECCIÓN APLICADA AQUÍ ***
+    setGameState(prevState => ({
+        ...prevState,
+        deck: willDrawFromDiscard ? prevState.deck.filter(c => c.id !== cardToDraw.id) : prevState.deck.filter(c => c.id !== cardToDraw.id),
+        discardPile: willDrawFromDiscard ? prevState.discardPile.filter(c => c.id !== cardToDraw.id) : prevState.discardPile,
+        player2Hand: [...prevState.player2Hand, cardToDraw]
+    }));
 
     setAnimatingCard({
       card: cardToDraw,
-      origin: getElementPosition(sourceRef),
-      destination: getElementPosition(opponentHandRef),
+      origin: originRect,
+      destination: {
+          x: destinationRect.left + destinationRect.width / 2,
+          y: destinationRect.top + destinationRect.height / 2,
+      },
       onComplete: () => {
-        setGameState(prevState => ({
-          ...prevState,
-          deck: willDrawFromDiscard ? prevState.deck : prevState.deck.slice(1),
-          discardPile: willDrawFromDiscard ? prevState.discardPile.slice(1) : prevState.discardPile,
-          player2Hand: [...prevState.player2Hand, cardToDraw]
-        }));
         setAnimatingCard(null);
-        // Una vez termina el robo, se inicia el descarte tras un breve instante
         setTimeout(() => runOpponentDiscard(), 500);
       }
     });
@@ -192,10 +203,16 @@ function Board() {
           cardToDiscard = player2Hand.sort((a,b) => a.value - b.value)[0];
       }
 
+      const originRect = getElementPosition(opponentHandRef);
+      const destinationRect = getElementPosition(discardRef);
+
       setAnimatingCard({
           card: cardToDiscard,
-          origin: getElementPosition(opponentHandRef),
-          destination: getElementPosition(discardRef),
+          origin: originRect,
+          destination: {
+              x: destinationRect.left + destinationRect.width / 2,
+              y: destinationRect.top + destinationRect.height / 2,
+          },
           onComplete: () => {
               setGameState(prevState => ({
                   ...prevState,
@@ -209,7 +226,6 @@ function Board() {
       });
   };
 
-
   const handleDragStart = (event) => setDraggingCard(event.active.id);
 
   const handleDragEnd = (event) => {
@@ -221,20 +237,26 @@ function Board() {
       const discardedCard = gameState.player1Hand.find(card => card.id === active.id);
       if (!discardedCard) return;
 
+      const originRect = getElementPosition(playerHandRef);
+      const destinationRect = getElementPosition(discardRef);
+
+      // *** MISMA CORRECCIÓN APLICADA AQUÍ ***
+      setGameState(prevState => {
+        const newPlayerHand = prevState.player1Hand.filter(card => card.id !== discardedCard.id);
+        const newDiscardPile = [discardedCard, ...prevState.discardPile];
+        return { ...prevState, player1Hand: newPlayerHand, discardPile: newDiscardPile };
+      });
+      setTurnPhase('opponent_turn');
+      
       setAnimatingCard({
         card: discardedCard,
-        origin: getElementPosition(playerHandRef),
-        destination: getElementPosition(discardRef),
+        origin: originRect,
+        destination: {
+            x: destinationRect.left + destinationRect.width / 2,
+            y: destinationRect.top + destinationRect.height / 2,
+        },
         onComplete: () => {
-          setGameState(prevState => {
-            const cardToDiscard = prevState.player1Hand.find(c => c.id === active.id);
-            if (!cardToDiscard) return prevState;
-            const newPlayerHand = prevState.player1Hand.filter(card => card.id !== active.id);
-            const newDiscardPile = [cardToDiscard, ...prevState.discardPile];
-            return { ...prevState, player1Hand: newPlayerHand, discardPile: newDiscardPile };
-          });
           setAnimatingCard(null);
-          setTurnPhase('opponent_turn');
         }
       });
     } else if (over.id && over.id !== active.id) {
@@ -246,7 +268,7 @@ function Board() {
       });
     }
   };
-
+  
   const handleNextRound = () => {
       const isGameOver = scores.player1 >= 50 || scores.player2 >= 50;
       if (isGameOver) {
@@ -264,43 +286,36 @@ function Board() {
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className={styles.gameBoard}>
-        <div className={styles.hamburgerMenu}>
-            <span></span>
-            <span></span>
-            <span></span>
+        
+        <div className={styles.topNav}>
+            <div className={styles.hamburgerMenu}><span></span><span></span><span></span></div>
         </div>
         
         {gameMessage && <div className={styles.gameMessage}>{gameMessage}</div>}
 
-        <div ref={opponentHandRef}>
+        <div ref={opponentHandRef} className={styles.opponentHandArea}>
           <PlayerHand cards={gameState.player2Hand} opponent={true} />
         </div>
 
         <div className={styles.tableWrapper}>
-          <div className={`${styles.infoContainer} ${styles.opponentInfo} ${turnPhase === 'opponent_turn' ? styles.activeTurn : ''}`}>
-            <PlayerInfo playerName="Oponente" playerScore={scores.player2} avatar={playerAvatarImg} />
+          <div className={`${styles.infoContainer} ${styles.opponentInfo}`}>
+              <PlayerInfo playerName="Oponente" playerScore={scores.player2} avatar={playerAvatarImg} />
+          </div>
+          <div className={`${styles.infoContainer} ${styles.playerInfo}`}>
+              <PlayerInfo playerName="Tú" playerScore={scores.player1} avatar={playerAvatarImg} />
           </div>
           <div className={styles.centerArea}>
-            <motion.div ref={deckRef} className={styles.deckArea} whileTap={{ scale: 0.95 }} onClick={() => handleDraw('deck')}>
-              {gameState.deck.slice(0, 4).map((_, i) => (
-                <motion.div key={i} className={styles.deckCard} style={{ zIndex: i, position: 'absolute' }} animate={{ rotate: i % 2 === 0 ? i * 1.5 : -i * 1.5 }}>
-                  <img src={imgBack} alt="Mazo de cartas" />
-                </motion.div>
-              ))}
-            </motion.div>
-            <div id="discard-area" ref={discardRef} className={styles.discardPileSlot} onClick={() => handleDraw('discard')}>
-              {gameState.discardPile.length > 0 ? <Card cardInfo={gameState.discardPile[0]} /> : <div className={styles.discardPlaceholder}></div>}
-            </div>
-            <div id="cut-area" className={`${styles.cutSlot} ${canPlayerCut ? styles.activeCut : ''}`} onClick={handleCut}>
-              <span className={styles.cutSlotSymbol}>X</span>
-            </div>
-          </div>
-          <div className={`${styles.infoContainer} ${styles.playerInfo} ${(turnPhase === 'draw' || turnPhase === 'discard') ? styles.activeTurn : ''}`}>
-           <PlayerInfo playerName="Tú" playerScore={scores.player1} avatar={playerAvatarImg} />
+              <motion.div ref={deckRef} className={styles.deckArea} whileTap={{ scale: 0.95 }} onClick={() => handleDraw('deck')}>
+                  {gameState.deck.length > 0 && <img src={imgBack} alt="Mazo" />}
+              </motion.div>
+              <div id="discard-area" ref={discardRef} className={styles.discardPileSlot} onClick={() => handleDraw('discard')}>
+                  {gameState.discardPile.length > 0 ? <Card cardInfo={gameState.discardPile[0]} /> : null}
+              </div>
+              <div id="cut-area" className={`${styles.cutSlot} ${canPlayerCut ? styles.activeCut : ''}`} onClick={handleCut}>X</div>
           </div>
         </div>
 
-        <div ref={playerHandRef}>
+        <div ref={playerHandRef} className={styles.playerHandArea}>
           <PlayerHand cards={gameState.player1Hand} draggingCardId={draggingCard} />
         </div>
 
@@ -310,24 +325,28 @@ function Board() {
               className={styles.animatingCard}
               key={animatingCard.card.id}
               initial={{
-                top: animatingCard.origin.y,
-                left: animatingCard.origin.x,
+                top: animatingCard.origin.top,
+                left: animatingCard.origin.left,
                 width: animatingCard.origin.width,
                 height: animatingCard.origin.height,
               }}
               animate={{
-                top: animatingCard.destination.y,
-                left: animatingCard.destination.x,
-                width: animatingCard.origin.width,
-                height: animatingCard.origin.height,
-                transition: { 
-                  type: 'spring', 
-                  damping: 12,
-                  stiffness: 100,
-                  duration: 0.5
+                top: [animatingCard.origin.top, animatingCard.destination.y - 100, animatingCard.destination.y],
+                left: [animatingCard.origin.left, animatingCard.destination.x, animatingCard.destination.x],
+                width: [animatingCard.origin.width, animatingCard.origin.width * 1.2, animatingCard.origin.width * 0.8],
+                height: [animatingCard.origin.height, animatingCard.origin.height * 1.2, animatingCard.origin.height * 0.8],
+                rotate: [0, 15, 0],
+                transition: {
+                  duration: 0.6,
+                  ease: "easeInOut",
+                  times: [0, 0.5, 1]
                 }
               }}
-              exit={{ opacity: 0 }}
+              exit={{
+                  opacity: 0,
+                  scale: 0,
+                  transition: { duration: 0.2 }
+              }}
               onAnimationComplete={animatingCard.onComplete}
             >
                <Card cardInfo={animatingCard.card} />
