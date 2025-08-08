@@ -19,41 +19,41 @@ export default function ScoreBoard({
 
   return (
     <motion.div
-      className="glass rounded-2xl p-4 space-y-4"
+      className="glass rounded-xl p-2 sm:p-4 space-y-2 sm:space-y-4 w-full max-w-xs sm:max-w-sm"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
     >
-      {/* Header */}
+      {/* Header - Mobile optimized */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Target className="w-5 h-5 text-blue-400" />
-          <span className="text-sm font-medium text-white/80">
-            Puntuación - Ronda {currentRound}
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Target className="w-3 h-3 sm:w-5 sm:h-5 text-blue-400" />
+          <span className="text-xs sm:text-sm font-medium text-white/80">
+            Ronda {currentRound}
           </span>
         </div>
         <div className="flex items-center gap-1 text-xs text-white/60">
-          <TrendingUp className="w-4 h-4" />
-          Meta: {maxScore} pts
+          <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">Meta:</span> {maxScore}
         </div>
       </div>
 
-      {/* Scores */}
-      <div className="space-y-3">
+      {/* Scores - Mobile layout */}
+      <div className="space-y-2 sm:space-y-3">
         {/* Player 1 */}
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {isPlayer1Leading && <Crown className="w-4 h-4 text-yellow-400" />}
-              <span className="text-sm font-medium text-white">
+            <div className="flex items-center gap-1 sm:gap-2">
+              {isPlayer1Leading && <Crown className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />}
+              <span className="text-xs sm:text-sm font-medium text-white">
                 {player1Name}
               </span>
             </div>
-            <span className="text-lg font-bold text-white">
+            <span className="text-sm sm:text-lg font-bold text-white">
               {player1Score}
             </span>
           </div>
-          <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-white/10 rounded-full h-1.5 sm:h-2 overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
               initial={{ width: 0 }}
@@ -64,19 +64,19 @@ export default function ScoreBoard({
         </div>
 
         {/* Player 2 */}
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              {isPlayer2Leading && <Crown className="w-4 h-4 text-yellow-400" />}
-              <span className="text-sm font-medium text-white">
+            <div className="flex items-center gap-1 sm:gap-2">
+              {isPlayer2Leading && <Crown className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />}
+              <span className="text-xs sm:text-sm font-medium text-white">
                 {player2Name}
               </span>
             </div>
-            <span className="text-lg font-bold text-white">
+            <span className="text-sm sm:text-lg font-bold text-white">
               {player2Score}
             </span>
           </div>
-          <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-white/10 rounded-full h-1.5 sm:h-2 overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-red-500 to-red-400 rounded-full"
               initial={{ width: 0 }}
@@ -87,8 +87,8 @@ export default function ScoreBoard({
         </div>
       </div>
 
-      {/* Game Mode Indicator */}
-      <div className="text-center pt-2 border-t border-white/10">
+      {/* Game Mode Indicator - Mobile */}
+      <div className="text-center pt-1 sm:pt-2 border-t border-white/10">
         <span className="text-xs text-white/60 font-medium">
           Partida a {maxScore} puntos
         </span>

@@ -37,7 +37,7 @@ export default function GameMessage({ message, type = 'info', show = true }) {
     <AnimatePresence>
       {show && message && (
         <motion.div
-          className="fixed top-4 left-1/2 transform -translate-x-1/2 z-30"
+          className="fixed top-2 sm:top-4 left-1/2 transform -translate-x-1/2 z-30 px-2"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
@@ -48,12 +48,12 @@ export default function GameMessage({ message, type = 'info', show = true }) {
           }}
         >
           <div className={`
-            flex items-center gap-3 px-6 py-3 rounded-full 
-            border backdrop-blur-xl font-medium
+            flex items-center gap-2 sm:gap-3 px-3 sm:px-6 py-2 sm:py-3 rounded-full 
+            border backdrop-blur-xl font-medium max-w-[90vw]
             ${messageConfig.className}
           `}>
-            <IconComponent className="w-5 h-5" />
-            <span className="text-sm font-medium">{message}</span>
+            <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+            <span className="text-xs sm:text-sm font-medium truncate">{message}</span>
           </div>
         </motion.div>
       )}
