@@ -1,42 +1,59 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* App specific styles */
+.app {
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow-x: hidden;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Ensure proper z-index stacking */
+.app * {
+  z-index: auto;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Override any default focus outlines with our custom ones */
+.app *:focus {
+  outline: none;
+}
+
+.app *:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.8);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth transitions for all interactive elements */
+.app button,
+.app [role="button"],
+.app [tabindex] {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Ensure text remains readable on all backgrounds */
+.app {
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Performance optimizations */
+.app * {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Hide scrollbars on mobile while maintaining functionality */
+@media (max-width: 768px) {
+  .app {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .app::-webkit-scrollbar {
+    display: none;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  
+  .app {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
