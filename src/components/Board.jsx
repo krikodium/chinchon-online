@@ -34,33 +34,35 @@ import imgBack from '../assets/back.png';
 // Game modals components
 function GameSettingsModal({ isOpen, onClose, gameMode, onGameModeChange, onNewGame }) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Configuración del Juego">
-      <div className="space-y-6">
+    <Modal isOpen={isOpen} onClose={onClose} title="Configuración del Juego" size="sm">
+      <div className="space-y-4">
         <div>
-          <label className="block text-white font-medium mb-3">Modo de Juego</label>
+          <label className="block text-white font-medium mb-3 text-sm">Modo de Juego</label>
           <div className="space-y-2">
             <Button
               variant={gameMode === 50 ? "primary" : "outline"}
               onClick={() => onGameModeChange(50)}
-              className="w-full justify-start"
+              className="w-full justify-start text-sm"
+              size="sm"
             >
               Partida a 50 puntos (Rápida)
             </Button>
             <Button
               variant={gameMode === 100 ? "primary" : "outline"}
               onClick={() => onGameModeChange(100)}
-              className="w-full justify-start"
+              className="w-full justify-start text-sm"
+              size="sm"
             >
               Partida a 100 puntos (Clásica)
             </Button>
           </div>
         </div>
         
-        <div className="flex gap-3">
-          <Button variant="success" onClick={onNewGame} className="flex-1">
+        <div className="flex gap-2">
+          <Button variant="success" onClick={onNewGame} className="flex-1" size="sm">
             Nueva Partida
           </Button>
-          <Button variant="secondary" onClick={onClose} className="flex-1">
+          <Button variant="secondary" onClick={onClose} className="flex-1" size="sm">
             Continuar
           </Button>
         </div>
@@ -85,35 +87,35 @@ function RoundResultModal({
   const winnerName = isPlayerWinner ? 'Tú' : 'Oponente';
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={isGameOver ? '🏆 Fin del Juego' : '📊 Fin de la Ronda'}>
-      <div className="space-y-6">
+    <Modal isOpen={isOpen} onClose={onClose} title={isGameOver ? '🏆 Fin del Juego' : '📊 Fin de la Ronda'} size="sm">
+      <div className="space-y-4">
         {/* Resultado de la ronda */}
         <div className="text-center">
-          <div className={`text-2xl font-bold mb-2 ${isPlayerWinner ? 'text-green-400' : 'text-red-400'}`}>
+          <div className={`text-xl sm:text-2xl font-bold mb-2 ${isPlayerWinner ? 'text-green-400' : 'text-red-400'}`}>
             {isGameOver ? (isPlayerWinner ? '¡Has Ganado!' : 'Has Perdido') : `Gana: ${winnerName}`}
           </div>
           
           {isChinchon && (
-            <div className="text-yellow-400 font-semibold mb-2">
+            <div className="text-yellow-400 font-semibold mb-2 text-sm">
               🎉 ¡CHINCHÓN! (+25 puntos bonus)
             </div>
           )}
         </div>
 
         {/* Puntos de la ronda */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center space-y-2">
-            <div className="text-white/60 text-sm">Tus Puntos</div>
-            <div className="text-2xl font-bold text-white">{player1Points}</div>
+        <div className="grid grid-cols-2 gap-4 text-center">
+          <div className="space-y-1">
+            <div className="text-white/60 text-xs">Tus Puntos</div>
+            <div className="text-lg font-bold text-white">{player1Points}</div>
           </div>
-          <div className="text-center space-y-2">
-            <div className="text-white/60 text-sm">Oponente</div>
-            <div className="text-2xl font-bold text-white">{player2Points}</div>
+          <div className="space-y-1">
+            <div className="text-white/60 text-xs">Oponente</div>
+            <div className="text-lg font-bold text-white">{player2Points}</div>
           </div>
         </div>
 
         {/* Puntuación total */}
-        <div className="border-t border-white/10 pt-4">
+        <div className="border-t border-white/10 pt-3">
           <ScoreBoard
             player1Score={totalScores.player1}
             player2Score={totalScores.player2}
@@ -123,22 +125,22 @@ function RoundResultModal({
         </div>
 
         {/* Acciones */}
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           {isGameOver ? (
             <>
-              <Button variant="primary" onClick={onNewGame} className="flex-1">
+              <Button variant="primary" onClick={onNewGame} className="flex-1" size="sm">
                 Jugar de Nuevo
               </Button>
-              <Button variant="outline" onClick={onClose} className="flex-1">
+              <Button variant="outline" onClick={onClose} className="flex-1" size="sm">
                 Ver Juego
               </Button>
             </>
           ) : (
             <>
-              <Button variant="success" onClick={onNextRound} className="flex-1">
+              <Button variant="success" onClick={onNextRound} className="flex-1" size="sm">
                 Siguiente Ronda
               </Button>
-              <Button variant="outline" onClick={onNewGame}>
+              <Button variant="outline" onClick={onNewGame} size="sm">
                 Nueva Partida
               </Button>
             </>
@@ -182,10 +184,15 @@ export default function Board() {
   // AI instance
   const [aiOpponent] = useState(new ChichonAI('medium'));
   
-  // Drag and drop sensors
+  // Drag and drop sensors - Mobile optimized
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 100, tolerance: 5 } })
+    useSensor(TouchSensor, { 
+      activationConstraint: { 
+        delay: 200, // Más tiempo para distinguir de scroll
+        tolerance: 8 
+      } 
+    })
   );
 
   // Initialize game
@@ -474,7 +481,7 @@ export default function Board() {
   // Loading state
   if (!gameState) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center space-y-4">
           <LoadingSpinner size="xl" />
           <div className="text-white text-lg">Cargando juego...</div>
@@ -494,7 +501,6 @@ export default function Board() {
     >
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
         {/* Background effects */}
-        <div className="absolute inset-0 bg-[url('/api/placeholder/1920/1080')] bg-cover bg-center opacity-5" />
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 via-transparent to-purple-600/20" />
         
         {/* Game message */}
@@ -504,41 +510,62 @@ export default function Board() {
           show={!!gameMessage}
         />
         
-        {/* Main game area */}
-        <div className="relative z-10 flex flex-col min-h-screen p-4 space-y-4">
+        {/* Main game area - Mobile First Layout */}
+        <div className="relative z-10 flex flex-col min-h-screen p-2 sm:p-4 space-y-2 sm:space-y-4">
           
-          {/* Top section - Opponent */}
-          <div className="flex justify-between items-start">
-            <PlayerInfo
-              playerName="Oponente"
-              playerScore={scores.player2}
-              isCurrentTurn={gamePhase === 'opponent_turn'}
-              canCut={player2Analysis?.canCut}
-              isChinchon={player2Analysis?.isChinchon}
-              deadwoodPoints={player2Analysis?.points}
-            />
+          {/* Top section - Mobile layout */}
+          <div className="flex flex-col space-y-2 sm:space-y-4">
             
-            <ScoreBoard
-              player1Score={scores.player1}
-              player2Score={scores.player2}
-              gameMode={scores.gameMode}
-              currentRound={scores.round}
-            />
-            
-            <GameControls
-              onDrawFromDeck={() => handleDraw('deck')}
-              onDrawFromDiscard={() => handleDraw('discard')}
-              onCut={handleCut}
-              onNewGame={handleNewGame}
-              onSettings={() => setShowSettings(true)}
-              canDrawFromDeck={gameState.deck.length > 0}
-              canDrawFromDiscard={gameState.discardPile.length > 0}
-              canCut={player1Analysis?.canCut}
-              isPlayerTurn={gamePhase === 'draw' || gamePhase === 'discard'}
-              gamePhase={gamePhase}
-              discardPileSize={gameState.discardPile.length}
-              deckSize={gameState.deck.length}
-            />
+            {/* Header con info y controles - Mobile */}
+            <div className="flex justify-between items-start gap-2">
+              <PlayerInfo
+                playerName="Oponente"
+                playerScore={scores.player2}
+                isCurrentTurn={gamePhase === 'opponent_turn'}
+                canCut={player2Analysis?.canCut}
+                isChinchon={player2Analysis?.isChinchon}
+                deadwoodPoints={player2Analysis?.points}
+              />
+              
+              <div className="flex-1 flex justify-center">
+                <ScoreBoard
+                  player1Score={scores.player1}
+                  player2Score={scores.player2}
+                  gameMode={scores.gameMode}
+                  currentRound={scores.round}
+                />
+              </div>
+              
+              {/* Controles en mobile - Compactos */}
+              <div className="sm:hidden">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSettings(true)}
+                  className="p-2"
+                >
+                  ⚙️
+                </Button>
+              </div>
+            </div>
+
+            {/* Controles desktop */}
+            <div className="hidden sm:block">
+              <GameControls
+                onDrawFromDeck={() => handleDraw('deck')}
+                onDrawFromDiscard={() => handleDraw('discard')}
+                onCut={handleCut}
+                onNewGame={handleNewGame}
+                onSettings={() => setShowSettings(true)}
+                canDrawFromDeck={gameState.deck.length > 0}
+                canDrawFromDiscard={gameState.discardPile.length > 0}
+                canCut={player1Analysis?.canCut}
+                isPlayerTurn={gamePhase === 'draw' || gamePhase === 'discard'}
+                gamePhase={gamePhase}
+                discardPileSize={gameState.discardPile.length}
+                deckSize={gameState.deck.length}
+              />
+            </div>
           </div>
 
           {/* Opponent hand */}
@@ -549,13 +576,13 @@ export default function Board() {
             />
           </div>
 
-          {/* Center area - Table */}
-          <div className="flex-1 flex items-center justify-center">
-            <div className="flex items-center gap-8">
+          {/* Center area - Mesa - Mobile optimized */}
+          <div className="flex-1 flex items-center justify-center min-h-[120px] sm:min-h-[200px]">
+            <div className="flex items-center gap-4 sm:gap-8">
               {/* Deck */}
               <motion.div
                 ref={deckRef}
-                className="relative w-24 h-36 cursor-pointer group"
+                className="relative w-16 h-24 sm:w-20 sm:h-30 md:w-24 md:h-36 cursor-pointer group"
                 onClick={() => handleDraw('deck')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -567,13 +594,13 @@ export default function Board() {
                       alt="Mazo" 
                       className="w-full h-full object-cover rounded-lg shadow-lg group-hover:shadow-xl transition-shadow"
                     />
-                    <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                    <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs px-1 py-0.5 rounded-full font-bold">
                       {gameState.deck.length}
                     </div>
                   </>
                 ) : (
                   <div className="w-full h-full border-2 border-dashed border-white/30 rounded-lg flex items-center justify-center">
-                    <span className="text-white/50 text-sm">Vacío</span>
+                    <span className="text-white/50 text-xs">Vacío</span>
                   </div>
                 )}
               </motion.div>
@@ -582,7 +609,7 @@ export default function Board() {
               <motion.div
                 id="discard-area"
                 ref={discardRef}
-                className="relative w-24 h-36 cursor-pointer group"
+                className="relative w-16 h-24 sm:w-20 sm:h-30 md:w-24 md:h-36 cursor-pointer group"
                 onClick={() => handleDraw('discard')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -591,24 +618,62 @@ export default function Board() {
                   <>
                     <Card 
                       cardInfo={gameState.discardPile[0]} 
-                      size="xl"
+                      size="lg"
                     />
                     {gameState.discardPile.length > 1 && (
-                      <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                      <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1 py-0.5 rounded-full font-bold">
                         {gameState.discardPile.length}
                       </div>
                     )}
                   </>
                 ) : (
                   <div className="w-full h-full border-2 border-dashed border-white/30 rounded-lg flex items-center justify-center">
-                    <span className="text-white/50 text-sm">Descarte</span>
+                    <span className="text-white/50 text-xs">Descarte</span>
                   </div>
                 )}
               </motion.div>
             </div>
           </div>
 
-          {/* Player hand */}
+          {/* Controles Mobile - En la parte central */}
+          <div className="sm:hidden px-2">
+            <div className="flex justify-center gap-2">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => handleDraw('deck')}
+                disabled={gamePhase !== 'draw' || gameState.deck.length === 0}
+                className="flex flex-col items-center px-3 py-2"
+              >
+                <span className="text-xs">Mazo</span>
+                <span className="text-xs opacity-75">{gameState.deck.length}</span>
+              </Button>
+              
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => handleDraw('discard')}
+                disabled={gamePhase !== 'draw' || gameState.discardPile.length === 0}
+                className="flex flex-col items-center px-3 py-2"
+              >
+                <span className="text-xs">Descarte</span>
+                <span className="text-xs opacity-75">{gameState.discardPile.length}</span>
+              </Button>
+              
+              {player1Analysis?.canCut && (
+                <Button
+                  variant="success"
+                  size="sm"
+                  onClick={handleCut}
+                  className="flex flex-col items-center px-3 py-2"
+                >
+                  <span className="text-xs font-bold">¡CORTAR!</span>
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Player hand - 4 arriba, 3 abajo */}
           <div ref={playerHandRef} className="flex-shrink-0">
             <PlayerHand
               cards={gameState.player1Hand}
@@ -620,7 +685,7 @@ export default function Board() {
           </div>
 
           {/* Bottom section - Player info */}
-          <div className="flex justify-center">
+          <div className="flex justify-center pb-2">
             <PlayerInfo
               playerName="Tú"
               playerScore={scores.player1}
@@ -680,16 +745,19 @@ export default function Board() {
           onNewGame={handleNewGame}
         />
 
-        {/* Toast notifications */}
+        {/* Toast notifications - Mobile optimized */}
         <Toaster
-          position="bottom-center"
+          position="top-center"
           toastOptions={{
-            duration: 3000,
+            duration: 2000,
             style: {
               background: 'rgba(0, 0, 0, 0.8)',
               color: '#ffffff',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: '12px',
+              fontSize: '14px',
+              padding: '12px 16px',
+              maxWidth: '90vw',
             },
           }}
         />
