@@ -1,11 +1,11 @@
 import React from 'react';
-import Board from './components/Board';
+import CasinoBoard from './components/CasinoBoard';
 import './App.css';
 
 function App() {
   return (
     <div className="app">
-      <Board />
+      <CasinoBoard />
     </div>
   );
 }
