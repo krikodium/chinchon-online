@@ -12,13 +12,21 @@
   --shadow-hard: 0 30px 80px rgba(0, 0, 0, 0.25);
 }
 
-/* Base styles */
+/* Base styles - Mobile First */
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
   scroll-behavior: smooth;
+  font-size: 14px; /* Base más pequeño para mobile */
+}
+
+@media (min-width: 640px) {
+  html {
+    font-size: 16px;
+  }
 }
 
 body {
@@ -30,6 +38,12 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #root {
@@ -40,16 +54,36 @@ body {
   position: relative;
 }
 
-/* Animaciones globales */
+/* Mobile viewport fix */
+@supports (-webkit-touch-callout: none) {
+  #root {
+    height: -webkit-fill-available;
+  }
+}
+
+/* Touch-friendly interactions */
+button, [role="button"], [data-clickable] {
+  touch-action: manipulation;
+  min-height: 44px; /* iOS recommended minimum */
+  min-width: 44px;
+}
+
+@media (max-width: 640px) {
+  button, [role="button"], [data-clickable] {
+    min-height: 48px; /* Larger for mobile */
+  }
+}
+
+/* Animaciones globales - Optimizadas para mobile */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-6px); }
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -60,7 +94,7 @@ body {
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -71,7 +105,7 @@ body {
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(100px);
+    transform: translateX(60px);
   }
   to {
     opacity: 1;
@@ -82,7 +116,7 @@ body {
 @keyframes slideInLeft {
   from {
     opacity: 0;
-    transform: translateX(-100px);
+    transform: translateX(-60px);
   }
   to {
     opacity: 1;
@@ -111,32 +145,50 @@ body {
   animation: slideInLeft 0.5s ease-out forwards;
 }
 
-/* Efectos glass/blur */
+/* Efectos glass/blur - Mobile optimizado */
 .glass {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 640px) {
+  .glass {
+    backdrop-filter: blur(10px);
+  }
 }
 
 .glass-dark {
   background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Scrollbar personalizada */
+@media (max-width: 640px) {
+  .glass-dark {
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Scrollbar personalizada - Mobile friendly */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
+}
+
+@media (min-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
 }
 
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -187,4 +239,45 @@ body {
 @keyframes loading {
   0% { left: -100%; }
   100% { left: 100%; }
+}
+
+/* Mobile specific improvements */
+@media (max-width: 640px) {
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px;
+  }
+  
+  /* Better touch targets */
+  .card-wrapper {
+    padding: 4px;
+  }
+  
+  /* Reduce motion for better battery life */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-fade-in-up,
+  .animate-scale-in,
+  .animate-slide-in-right,
+  .animate-slide-in-left {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+  }
 }
