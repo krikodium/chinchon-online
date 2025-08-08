@@ -66,7 +66,14 @@ export default function CasinoCard({ cardInfo, className = '' }) {
             setLoadError(true);
           }
         }}
+        style={{
+          imageRendering: 'crisp-edges',
+          filter: 'contrast(1.1) brightness(1.1) saturate(1.2)',
+        }}
       />
+
+      {/* Enhanced Card Border */}
+      <div className="absolute inset-0 rounded-lg border border-white/20 pointer-events-none"></div>
 
       {/* Error state */}
       {loadError && !cardInfo?.isOpponentCard && (

@@ -158,7 +158,6 @@ export default function CasinoBoard() {
     
     // Simulate opponent turn
     setTimeout(() => {
-      // Simple opponent AI
       if (gameState?.player2Hand && gameState.deck.length > 0) {
         const drawnCard = gameState.deck[0];
         const newHand = [...gameState.player2Hand, drawnCard];
@@ -208,7 +207,7 @@ export default function CasinoBoard() {
   // Loading state
   if (!gameState) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-green-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
         <div className="text-center space-y-4">
           <div className="text-white text-lg">Cargando mesa...</div>
         </div>
@@ -226,54 +225,80 @@ export default function CasinoBoard() {
       {/* Casino Table Container */}
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 relative overflow-hidden">
         
-        {/* Table Background */}
-        <div className="absolute inset-0 bg-gradient-radial from-green-800 via-green-700 to-green-900 opacity-60"></div>
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-600/10 to-transparent"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(139,69,19,0.1)_0%,transparent_70%)]"></div>
+        </div>
+
+        {/* Corner Icons - Top */}
+        <div className="absolute top-4 left-4 z-20">
+          <div className="w-12 h-12 rounded-full bg-cyan-500/20 border-2 border-cyan-400 flex items-center justify-center cursor-pointer hover:bg-cyan-500/30 transition-all">
+            <span className="text-cyan-300 text-xl">←</span>
+          </div>
+        </div>
         
+        <div className="absolute top-4 right-4 z-20">
+          <div className="w-12 h-12 rounded-full bg-cyan-500/20 border-2 border-cyan-400 flex items-center justify-center cursor-pointer hover:bg-cyan-500/30 transition-all" onClick={() => setShowSettings(true)}>
+            <span className="text-cyan-300 text-xl">≡</span>
+          </div>
+        </div>
+
+        {/* Side Chips */}
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 space-y-2 z-10">
+          <div className="w-8 h-8 rounded-full bg-green-500 shadow-lg border-2 border-green-300"></div>
+          <div className="w-8 h-8 rounded-full bg-green-600 shadow-lg border-2 border-green-400"></div>
+          <div className="w-8 h-8 rounded-full bg-green-700 shadow-lg border-2 border-green-500"></div>
+        </div>
+
         {/* Casino Table Layout */}
-        <div className="relative z-10 min-h-screen flex flex-col">
+        <div className="relative z-10 min-h-screen flex flex-col justify-between">
           
-          {/* Top Section - Opponent Cards in Arc */}
-          <div className="flex-1 flex items-start justify-center pt-4 sm:pt-8">
-            <div className="relative">
-              {/* Opponent Avatar */}
-              <div className="absolute -left-16 top-1/2 transform -translate-y-1/2">
-                <div className="flex flex-col items-center space-y-2">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center border-3 border-yellow-400">
-                    <span className="text-white font-bold text-sm sm:text-lg">OP</span>
+          {/* Top Section - Opponent */}
+          <div className="flex-none pt-4 px-4">
+            <div className="flex justify-center items-start relative">
+              
+              {/* Opponent Avatar - Top Right */}
+              <div className="absolute top-0 right-8">
+                <div className="flex items-center space-x-3 bg-gradient-to-r from-pink-900/80 to-red-900/80 backdrop-blur-sm rounded-full px-4 py-2 border border-pink-500/30">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center border-2 border-orange-300 shadow-lg">
+                    <span className="text-white font-bold text-sm">👤</span>
                   </div>
-                  <div className="text-center">
+                  <div className="text-right">
                     <div className="text-pink-300 font-bold text-sm">Oponente</div>
                     <div className="text-white text-xs">{scores.player2} / {scores.gameMode}</div>
                   </div>
                 </div>
               </div>
               
-              {/* Opponent Cards - Curved Layout */}
-              <div className="flex items-center justify-center">
-                <div className="relative" style={{ width: '400px', height: '100px' }}>
+              {/* Opponent Cards - Curved Arc */}
+              <div className="mt-16">
+                <div className="relative flex justify-center" style={{ width: '600px', height: '120px' }}>
                   {gameState.player2Hand.map((card, index) => {
                     const totalCards = gameState.player2Hand.length;
-                    const angle = ((index - (totalCards - 1) / 2) * 15); // 15 degrees between cards
-                    const radius = 150;
+                    const angle = ((index - (totalCards - 1) / 2) * 12); // 12 degrees between cards
+                    const radius = 200;
                     const x = Math.sin((angle * Math.PI) / 180) * radius;
-                    const y = Math.cos((angle * Math.PI) / 180) * radius * 0.3;
+                    const y = Math.cos((angle * Math.PI) / 180) * radius * 0.2;
                     
                     return (
                       <motion.div
                         key={card.id}
                         className="absolute"
                         style={{
-                          left: `50%`,
-                          top: `50%`,
-                          transform: `translate(${x - 30}px, ${-y - 40}px) rotate(${angle}deg)`,
-                          zIndex: index
+                          left: '50%',
+                          top: '50%',
+                          transform: `translate(${x - 35}px, ${-y - 50}px) rotate(${angle}deg)`,
+                          zIndex: 10 + index
                         }}
-                        initial={{ scale: 0, rotate: angle }}
+                        initial={{ scale: 0, rotate: angle + 180 }}
                         animate={{ scale: 1, rotate: angle }}
-                        transition={{ delay: index * 0.1, type: "spring" }}
+                        transition={{ delay: index * 0.1, type: "spring", stiffness: 150, damping: 12 }}
                       >
-                        <div className="w-12 h-16 sm:w-16 sm:h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded border border-blue-300 flex items-center justify-center shadow-lg">
-                          <div className="text-white text-xs">🂠</div>
+                        <div className="w-16 h-22 rounded-lg shadow-xl border border-white/20 overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800">
+                          <div className="w-full h-full bg-blue-gradient-pattern flex items-center justify-center">
+                            <div className="text-white text-xs opacity-80">🂠</div>
+                          </div>
                         </div>
                       </motion.div>
                     );
@@ -284,126 +309,135 @@ export default function CasinoBoard() {
           </div>
 
           {/* Center Table - Game Area */}
-          <div className="flex-none">
-            <div className="mx-4 sm:mx-8 bg-gradient-to-br from-green-600 to-green-800 rounded-2xl border-4 border-yellow-600 shadow-2xl p-4 sm:p-8">
-              <div className="flex items-center justify-center space-x-4 sm:space-x-12">
+          <div className="flex-none px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-gradient-to-br from-green-600 to-green-800 rounded-3xl border-4 border-yellow-500 shadow-2xl p-6 relative">
                 
-                {/* Deck */}
-                <motion.div
-                  ref={deckRef}
-                  className="relative cursor-pointer group"
-                  onClick={() => handleDraw('deck')}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <div className="w-16 h-24 sm:w-20 sm:h-30 bg-gradient-to-br from-red-800 to-red-900 rounded-lg border-2 border-yellow-400 flex items-center justify-center shadow-xl">
-                    {gameState.deck.length > 0 ? (
-                      <>
-                        <img src={imgBack} alt="Mazo" className="w-full h-full object-cover rounded-lg" />
-                        <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold border border-white">
-                          {gameState.deck.length}
-                        </div>
-                      </>
-                    ) : (
-                      <div className="text-yellow-300 text-xs font-bold">Vacío</div>
-                    )}
-                  </div>
-                </motion.div>
-
-                {/* Discard Pile */}
-                <motion.div
-                  id="discard-area"
-                  ref={discardRef}
-                  className="relative cursor-pointer group"
-                  onClick={() => handleDraw('discard')}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <div className="w-16 h-24 sm:w-20 sm:h-30 bg-white rounded-lg border-2 border-yellow-400 shadow-xl overflow-hidden">
-                    {gameState.discardPile.length > 0 ? (
-                      <>
-                        <CasinoCard cardInfo={gameState.discardPile[0]} />
-                        {gameState.discardPile.length > 1 && (
-                          <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold border border-white">
-                            {gameState.discardPile.length}
+                {/* Table Inner Shadow */}
+                <div className="absolute inset-2 rounded-2xl border border-green-400/30 pointer-events-none"></div>
+                
+                <div className="flex items-center justify-center space-x-8 relative z-10">
+                  
+                  {/* Deck */}
+                  <motion.div
+                    ref={deckRef}
+                    className="relative cursor-pointer group"
+                    onClick={() => handleDraw('deck')}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <div className="w-20 h-28 bg-gradient-to-br from-blue-700 to-blue-900 rounded-xl border-3 border-white shadow-2xl overflow-hidden">
+                      {gameState.deck.length > 0 ? (
+                        <>
+                          <div className="w-full h-full bg-blue-gradient-pattern opacity-90"></div>
+                          <div className="absolute -top-2 -right-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white text-sm px-2 py-1 rounded-full font-bold border-2 border-white shadow-lg">
+                            {gameState.deck.length}
                           </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="flex items-center justify-center h-full text-gray-400 text-xs">
-                        Descarte
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
+                        </>
+                      ) : (
+                        <div className="flex items-center justify-center h-full text-white/50 text-xs font-bold">
+                          Vacío
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
 
-                {/* Cut Button */}
-                <motion.div
-                  ref={cutRef}
-                  className={`
-                    w-16 h-24 sm:w-20 sm:h-30 rounded-lg border-2 flex items-center justify-center cursor-pointer shadow-xl font-bold text-2xl
-                    ${player1Analysis?.canCut 
-                      ? 'bg-gradient-to-br from-green-400 to-green-600 border-yellow-400 text-white hover:from-green-500 hover:to-green-700' 
-                      : 'bg-gradient-to-br from-gray-600 to-gray-800 border-gray-500 text-gray-400 cursor-not-allowed'
-                    }
-                  `}
-                  onClick={handleCut}
-                  whileHover={player1Analysis?.canCut ? { scale: 1.05 } : {}}
-                  whileTap={player1Analysis?.canCut ? { scale: 0.95 } : {}}
-                  animate={player1Analysis?.canCut ? {
-                    boxShadow: [
-                      "0 0 10px rgba(34, 197, 94, 0.5)",
-                      "0 0 20px rgba(34, 197, 94, 0.8)",
-                      "0 0 10px rgba(34, 197, 94, 0.5)"
-                    ]
-                  } : {}}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  ×
-                </motion.div>
-              </div>
+                  {/* Discard Pile */}
+                  <motion.div
+                    id="discard-area"
+                    ref={discardRef}
+                    className="relative cursor-pointer group"
+                    onClick={() => handleDraw('discard')}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <div className="w-20 h-28 bg-white rounded-xl border-3 border-white shadow-2xl overflow-hidden">
+                      {gameState.discardPile.length > 0 ? (
+                        <>
+                          <CasinoCard cardInfo={gameState.discardPile[0]} />
+                          {gameState.discardPile.length > 1 && (
+                            <div className="absolute -top-2 -right-2 bg-gradient-to-r from-red-400 to-red-600 text-white text-sm px-2 py-1 rounded-full font-bold border-2 border-white shadow-lg">
+                              {gameState.discardPile.length}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div className="flex items-center justify-center h-full text-gray-400 text-xs font-bold">
+                          Descarte
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
 
-              {/* Game Status */}
-              <div className="text-center mt-4">
-                <div className="text-yellow-100 font-bold text-sm sm:text-base">
-                  {gamePhase === 'draw' && 'Tu turno - Elige una carta'}
-                  {gamePhase === 'discard' && 'Tu turno - Descarta una carta'}
-                  {gamePhase === 'opponent_turn' && 'Turno del oponente...'}
+                  {/* Cut Button */}
+                  <motion.div
+                    ref={cutRef}
+                    className={`
+                      w-20 h-28 rounded-xl border-3 flex items-center justify-center cursor-pointer shadow-2xl font-bold text-3xl
+                      ${player1Analysis?.canCut 
+                        ? 'bg-gradient-to-br from-green-400 to-green-600 border-white text-white hover:from-green-500 hover:to-green-700' 
+                        : 'bg-gradient-to-br from-gray-600 to-gray-800 border-gray-400 text-gray-300 cursor-not-allowed'
+                      }
+                    `}
+                    onClick={handleCut}
+                    whileHover={player1Analysis?.canCut ? { scale: 1.05, y: -5 } : {}}
+                    whileTap={player1Analysis?.canCut ? { scale: 0.95 } : {}}
+                    animate={player1Analysis?.canCut ? {
+                      boxShadow: [
+                        "0 0 20px rgba(34, 197, 94, 0.6)",
+                        "0 0 30px rgba(34, 197, 94, 0.9)",
+                        "0 0 20px rgba(34, 197, 94, 0.6)"
+                      ]
+                    } : {}}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    ×
+                  </motion.div>
                 </div>
-                {player1Analysis?.canCut && (
-                  <div className="text-green-300 text-xs mt-1 animate-pulse">
-                    ¡Puedes cortar con {player1Analysis.points} puntos!
+
+                {/* Game Status */}
+                <div className="text-center mt-6">
+                  <div className="text-yellow-100 font-bold text-lg">
+                    {gamePhase === 'draw' && 'Tu turno - Elige una carta'}
+                    {gamePhase === 'discard' && 'Tu turno - Descarta una carta'}
+                    {gamePhase === 'opponent_turn' && 'Turno del oponente...'}
                   </div>
-                )}
+                  {player1Analysis?.canCut && (
+                    <div className="text-green-300 text-sm mt-2 animate-pulse">
+                      ¡Puedes cortar con {player1Analysis.points} puntos!
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom Section - Player Cards in Arc */}
-          <div className="flex-1 flex items-end justify-center pb-4 sm:pb-8">
-            <div className="relative">
-              {/* Player Avatar */}
-              <div className="absolute -left-16 top-1/2 transform -translate-y-1/2">
-                <div className="flex flex-col items-center space-y-2">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center border-3 border-yellow-400">
-                    <span className="text-white font-bold text-sm sm:text-lg">TÚ</span>
+          {/* Bottom Section - Player */}
+          <div className="flex-none pb-4 px-4">
+            <div className="flex justify-center items-end relative">
+              
+              {/* Player Avatar - Bottom Left */}
+              <div className="absolute bottom-0 left-8">
+                <div className="flex items-center space-x-3 bg-gradient-to-r from-cyan-900/80 to-blue-900/80 backdrop-blur-sm rounded-full px-4 py-2 border border-cyan-500/30">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center border-2 border-cyan-300 shadow-lg">
+                    <span className="text-white font-bold text-sm">👤</span>
                   </div>
-                  <div className="text-center">
+                  <div>
                     <div className="text-cyan-300 font-bold text-sm">Jugador</div>
                     <div className="text-white text-xs">{scores.player1} / {scores.gameMode}</div>
                   </div>
                 </div>
               </div>
               
-              {/* Player Cards - Curved Layout */}
-              <div className="flex items-center justify-center">
-                <div className="relative" style={{ width: '400px', height: '120px' }}>
+              {/* Player Cards - Curved Arc */}
+              <div className="mb-16">
+                <div className="relative flex justify-center" style={{ width: '600px', height: '140px' }}>
                   {gameState.player1Hand.map((card, index) => {
                     const totalCards = gameState.player1Hand.length;
-                    const angle = ((index - (totalCards - 1) / 2) * -15); // Negative for upward curve
-                    const radius = 150;
+                    const angle = ((index - (totalCards - 1) / 2) * -12); // Negative for upward curve
+                    const radius = 200;
                     const x = Math.sin((angle * Math.PI) / 180) * radius;
-                    const y = Math.cos((angle * Math.PI) / 180) * radius * 0.3;
+                    const y = Math.cos((angle * Math.PI) / 180) * radius * 0.2;
                     
                     const isDragging = draggingCard === card.id;
                     const isHighlighted = highlightedCards.includes(card.id);
@@ -413,24 +447,24 @@ export default function CasinoBoard() {
                         key={card.id}
                         className={`absolute cursor-pointer ${isDragging ? 'z-50' : 'z-auto'}`}
                         style={{
-                          left: `50%`,
-                          top: `50%`,
-                          transform: `translate(${x - 30}px, ${y - 60}px) rotate(${angle}deg)`,
-                          zIndex: isDragging ? 50 : totalCards - Math.abs(index - (totalCards - 1) / 2)
+                          left: '50%',
+                          top: '50%',
+                          transform: `translate(${x - 35}px, ${y - 70}px) rotate(${angle}deg)`,
+                          zIndex: isDragging ? 50 : 20 + (totalCards - Math.abs(index - (totalCards - 1) / 2))
                         }}
-                        initial={{ scale: 0, rotate: angle }}
+                        initial={{ scale: 0, rotate: angle - 180 }}
                         animate={{ 
-                          scale: isDragging ? 1.1 : 1, 
+                          scale: isDragging ? 1.15 : 1, 
                           rotate: angle,
-                          y: isHighlighted ? -10 : 0
+                          y: isHighlighted ? -15 : 0
                         }}
-                        transition={{ delay: index * 0.1, type: "spring" }}
-                        whileHover={{ scale: 1.1, y: -10 }}
+                        transition={{ delay: index * 0.1, type: "spring", stiffness: 150, damping: 12 }}
+                        whileHover={{ scale: 1.1, y: -20, zIndex: 100 }}
                         onClick={() => handleCardClick(card)}
                       >
                         <div className={`
-                          w-14 h-20 sm:w-16 sm:h-24 rounded-lg shadow-lg border-2 overflow-hidden
-                          ${isHighlighted ? 'border-green-400 ring-2 ring-green-400' : 'border-yellow-400'}
+                          w-16 h-22 rounded-lg shadow-2xl border-2 overflow-hidden
+                          ${isHighlighted ? 'border-green-400 ring-2 ring-green-400/50' : 'border-white'}
                         `}>
                           <CasinoCard cardInfo={card} />
                         </div>
@@ -444,6 +478,13 @@ export default function CasinoBoard() {
 
         </div>
 
+        {/* Bottom Navigation */}
+        <div className="absolute bottom-4 right-4 z-20">
+          <div className="w-12 h-12 rounded-full bg-purple-500/20 border-2 border-purple-400 flex items-center justify-center cursor-pointer hover:bg-purple-500/30 transition-all">
+            <span className="text-purple-300 text-xl">📊</span>
+          </div>
+        </div>
+
         {/* Settings Modal */}
         <Modal isOpen={showSettings} onClose={() => setShowSettings(false)} title="Configuración">
           <div className="space-y-4">
@@ -455,14 +496,6 @@ export default function CasinoBoard() {
             </Button>
           </div>
         </Modal>
-
-        {/* Settings Button */}
-        <button
-          onClick={() => setShowSettings(true)}
-          className="fixed top-4 right-4 w-10 h-10 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
-        >
-          ⚙️
-        </button>
 
         {/* Toast notifications */}
         <Toaster
