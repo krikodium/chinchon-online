@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import styles from './Card.module.css';
+import { motion } from 'framer-motion';
 import imgBack from '../assets/back.png';
 
-// Carpetas según estructura
+// Mapeo de archivos de cartas
 const suitFolderMap = {
   oros: 'OROS',
   copas: 'COPAS',
@@ -12,51 +12,27 @@ const suitFolderMap = {
 
 const cardFileNameMap = {
   oros: {
-    1: '1 As de oros.png',
-    2: '2 de oros.png',
-    3: '3 de oros.png',
-    4: '4 de oros.png',
-    5: '5 de oros.png',
-    6: '6 de oros.png',
-    7: '7 de oros.png',
-    10: '10 sota de oros.png',
-    11: '11 caballero de oros.png',
+    1: '1 As de oros.png', 2: '2 de oros.png', 3: '3 de oros.png',
+    4: '4 de oros.png', 5: '5 de oros.png', 6: '6 de oros.png',
+    7: '7 de oros.png', 10: '10 sota de oros.png', 11: '11 caballero de oros.png',
     12: '12 rey de oros.png',
   },
   copas: {
-    1: '1 as de copas.png',
-    2: '2 de copas.png',
-    3: '3 de copas.png',
-    4: '4 de copas.png',
-    5: '5 de copas.png',
-    6: '6 de copas.png',
-    7: '7 de copas.png',
-    10: '10 de copas.png',
-    11: '11 de copas.png',
+    1: '1 as de copas.png', 2: '2 de copas.png', 3: '3 de copas.png',
+    4: '4 de copas.png', 5: '5 de copas.png', 6: '6 de copas.png',
+    7: '7 de copas.png', 10: '10 de copas.png', 11: '11 de copas.png',
     12: '12 de copas.png',
   },
   espadas: {
-    1: '1 As de espadas.png',
-    2: '2 de espadas.png',
-    3: '3 de espadas.png',
-    4: '4 de espadas.png',
-    5: '5 de espadas.png',
-    6: '6 de espadas.png',
-    7: '7 de espadas.png',
-    10: '10 sota de espadas.png',
-    11: '11 caballero de espadas.png',
+    1: '1 As de espadas.png', 2: '2 de espadas.png', 3: '3 de espadas.png',
+    4: '4 de espadas.png', 5: '5 de espadas.png', 6: '6 de espadas.png',
+    7: '7 de espadas.png', 10: '10 sota de espadas.png', 11: '11 caballero de espadas.png',
     12: '12 Rey de espadas.png',
   },
   bastos: {
-    1: '1 As de bastos.png',
-    2: '2 de bastos.png',
-    3: '3 de bastos.png',
-    4: '4 de bastos.png',
-    5: '5 de bastos.png',
-    6: '6 de bastos.png',
-    7: '7 de bastos.png',
-    10: '10 sota de bastos.png',
-    11: '11 caballero de bastos.png',
+    1: '1 As de bastos.png', 2: '2 de bastos.png', 3: '3 de bastos.png',
+    4: '4 de bastos.png', 5: '5 de bastos.png', 6: '6 de bastos.png',
+    7: '7 de bastos.png', 10: '10 sota de bastos.png', 11: '11 caballero de bastos.png',
     12: '12 rey de bastos.png',
   },
 };
@@ -71,48 +47,125 @@ const getCardImageUrl = (card) => {
   return `/cartasImg/${folder}/${fileName}`;
 };
 
-function Card({ cardInfo }) {
+export default function Card({ 
+  cardInfo, 
+  isSelectable = false,
+  isSelected = false,
+  isHighlighted = false,
+  size = 'md',
+  onClick,
+  className = ''
+}) {
   const [loadError, setLoadError] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  
   const imgSrc = cardInfo?.isOpponentCard ? imgBack : getCardImageUrl(cardInfo);
-
-  const cardLabel = `${cardInfo?.value} de ${cardInfo?.suit}`;
+  
+  // Tamaños de carta
+  const sizeClasses = {
+    sm: 'w-12 h-18',
+    md: 'w-16 h-24',
+    lg: 'w-20 h-30',
+    xl: 'w-24 h-36'
+  };
 
   return (
-    <div className={styles.card} style={{ position: 'relative', textAlign: 'center' }}>
-      <img
-        src={imgSrc || imgBack}
-        alt={cardInfo?.isOpponentCard ? 'Carta del oponente' : `Carta ${cardInfo?.value} de ${cardInfo?.suit}`}
-        draggable="false"
-        onError={(e) => {
-          if (e.target.src.endsWith('.png')) {
-            e.target.src = e.target.src.replace('.png', '.webp');
-          } else {
-            e.target.src = imgBack;
-            setLoadError(true);
-          }
-        }}
-        style={{ width: '100%', display: 'block' }}
-      />
-      {loadError && !cardInfo?.isOpponentCard && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            color: '#fff',
-            background: 'rgba(0, 0, 0, 0.6)',
-            padding: '4px 8px',
-            borderRadius: '6px',
-            fontSize: '12px',
-            fontWeight: 'bold',
-          }}
-        >
-          ❌ {cardLabel}
-        </div>
+    <motion.div
+      className={`
+        relative ${sizeClasses[size]} cursor-pointer select-none
+        ${isSelectable ? 'hover:scale-105' : ''}
+        ${className}
+      `}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      onClick={onClick}
+      whileHover={isSelectable ? { 
+        scale: 1.05,
+        y: -8,
+        transition: { duration: 0.2 }
+      } : {}}
+      whileTap={isSelectable ? { 
+        scale: 0.95,
+        transition: { duration: 0.1 }
+      } : {}}
+      layout
+    >
+      {/* Glow effect para carta seleccionada/resaltada */}
+      {(isSelected || isHighlighted) && (
+        <motion.div
+          className={`
+            absolute inset-0 rounded-lg blur-sm -z-10
+            ${isSelected ? 'bg-blue-400/60' : 'bg-green-400/60'}
+          `}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        />
       )}
-    </div>
+
+      {/* Carta principal */}
+      <motion.div
+        className={`
+          relative w-full h-full rounded-lg overflow-hidden
+          bg-white shadow-lg hover:shadow-xl transition-all duration-200
+          ${isSelected ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-transparent' : ''}
+          ${isHighlighted ? 'ring-2 ring-green-400 ring-offset-2 ring-offset-transparent' : ''}
+        `}
+        style={{
+          transform: isHovered && isSelectable ? 'rotateY(5deg) rotateX(5deg)' : 'none',
+          transformStyle: 'preserve-3d',
+          transition: 'transform 0.2s ease'
+        }}
+      >
+        <img
+          src={imgSrc || imgBack}
+          alt={cardInfo?.isOpponentCard ? 'Carta del oponente' : `${cardInfo?.value} de ${cardInfo?.suit}`}
+          className="w-full h-full object-cover"
+          draggable="false"
+          onError={(e) => {
+            if (e.target.src.endsWith('.png')) {
+              e.target.src = e.target.src.replace('.png', '.webp');
+            } else {
+              e.target.src = imgBack;
+              setLoadError(true);
+            }
+          }}
+        />
+
+        {/* Overlay para carta del oponente */}
+        {cardInfo?.isOpponentCard && (
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-purple-900/20" />
+        )}
+
+        {/* Error state */}
+        {loadError && !cardInfo?.isOpponentCard && (
+          <div className="absolute inset-0 flex items-center justify-center bg-red-900/80">
+            <div className="text-center text-white">
+              <div className="text-xs font-bold mb-1">❌</div>
+              <div className="text-xs">
+                {cardInfo?.value} {cardInfo?.suit}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Valor de puntos para debugging (solo en desarrollo) */}
+        {process.env.NODE_ENV === 'development' && cardInfo?.points && !cardInfo?.isOpponentCard && (
+          <div className="absolute top-1 right-1 bg-black/60 text-white text-xs px-1 rounded">
+            {cardInfo.points}p
+          </div>
+        )}
+      </motion.div>
+
+      {/* Animación de selección */}
+      {isSelected && (
+        <motion.div
+          className="absolute inset-0 border-2 border-blue-400 rounded-lg pointer-events-none"
+          initial={{ scale: 1.2, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.2 }}
+        />
+      )}
+    </motion.div>
   );
 }
-
-export default Card;
