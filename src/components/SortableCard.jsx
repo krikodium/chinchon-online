@@ -3,27 +3,35 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Card from './Card';
 
-function SortableCard({ card }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: card.id });
+export default function SortableCard({ card, ...props }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: card.id });
 
   const style = {
-    // dnd-kit se encarga del transform durante el arrastre.
     transform: CSS.Transform.toString(transform),
     transition,
-    // El z-index y otros efectos de arrastre se gestionan en PlayerHand.module.css
+    opacity: isDragging ? 0.5 : 1,
   };
 
-  // Se eliminó motion.div para simplificar y evitar conflictos.
   return (
     <div
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
+      className={`
+        ${isDragging ? 'z-50 cursor-grabbing' : 'cursor-grab'}
+        ${isDragging ? 'rotate-3 scale-105' : ''}
+        transition-transform duration-200
+      `}
     >
-      <Card cardInfo={card} />
+      <Card cardInfo={card} {...props} />
     </div>
   );
 }
-
-export default SortableCard;
