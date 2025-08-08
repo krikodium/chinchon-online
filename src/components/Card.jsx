@@ -61,12 +61,12 @@ export default function Card({
   
   const imgSrc = cardInfo?.isOpponentCard ? imgBack : getCardImageUrl(cardInfo);
   
-  // Tamaños de carta
+  // Tamaños de carta - Mobile First
   const sizeClasses = {
-    sm: 'w-12 h-18',
-    md: 'w-16 h-24',
-    lg: 'w-20 h-30',
-    xl: 'w-24 h-36'
+    sm: 'w-8 h-12 sm:w-10 sm:h-14',
+    md: 'w-12 h-18 sm:w-14 sm:h-20 md:w-16 md:h-24',
+    lg: 'w-16 h-24 sm:w-18 sm:h-26 md:w-20 md:h-30',
+    xl: 'w-18 h-26 sm:w-20 sm:h-30 md:w-24 md:h-36'
   };
 
   return (
@@ -81,7 +81,7 @@ export default function Card({
       onClick={onClick}
       whileHover={isSelectable ? { 
         scale: 1.05,
-        y: -8,
+        y: -4,
         transition: { duration: 0.2 }
       } : {}}
       whileTap={isSelectable ? { 
@@ -108,11 +108,11 @@ export default function Card({
         className={`
           relative w-full h-full rounded-lg overflow-hidden
           bg-white shadow-lg hover:shadow-xl transition-all duration-200
-          ${isSelected ? 'ring-2 ring-blue-400 ring-offset-2 ring-offset-transparent' : ''}
-          ${isHighlighted ? 'ring-2 ring-green-400 ring-offset-2 ring-offset-transparent' : ''}
+          ${isSelected ? 'ring-2 ring-blue-400 ring-offset-1 ring-offset-transparent' : ''}
+          ${isHighlighted ? 'ring-2 ring-green-400 ring-offset-1 ring-offset-transparent' : ''}
         `}
         style={{
-          transform: isHovered && isSelectable ? 'rotateY(5deg) rotateX(5deg)' : 'none',
+          transform: isHovered && isSelectable ? 'rotateY(3deg) rotateX(3deg)' : 'none',
           transformStyle: 'preserve-3d',
           transition: 'transform 0.2s ease'
         }}
@@ -149,10 +149,17 @@ export default function Card({
           </div>
         )}
 
-        {/* Valor de puntos para debugging (solo en desarrollo) */}
-        {process.env.NODE_ENV === 'development' && cardInfo?.points && !cardInfo?.isOpponentCard && (
-          <div className="absolute top-1 right-1 bg-black/60 text-white text-xs px-1 rounded">
-            {cardInfo.points}p
+        {/* Badge de combinación en juego - Mobile optimized */}
+        {isHighlighted && !cardInfo?.isOpponentCard && (
+          <div className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1 py-0.5 rounded-full font-bold shadow-lg">
+            ✓
+          </div>
+        )}
+
+        {/* Badge de carta seleccionada - Mobile optimized */}
+        {isSelected && (
+          <div className="absolute -top-1 -left-1 bg-blue-500 text-white text-xs px-1 py-0.5 rounded-full font-bold shadow-lg">
+            ●
           </div>
         )}
       </motion.div>
