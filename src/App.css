@@ -1,9 +1,10 @@
-/* App specific styles */
+/* App specific styles - Futuristic Version */
 .app {
   min-height: 100vh;
   width: 100vw;
   position: relative;
   overflow-x: hidden;
+  background: var(--gradient-futuristic);
 }
 
 /* Ensure proper z-index stacking */
@@ -11,34 +12,56 @@
   z-index: auto;
 }
 
-/* Override any default focus outlines with our custom ones */
+/* Futuristic focus outlines */
 .app *:focus {
   outline: none;
 }
 
 .app *:focus-visible {
-  outline: 2px solid rgba(59, 130, 246, 0.8);
+  outline: 2px solid var(--neon-blue);
   outline-offset: 2px;
   border-radius: 4px;
+  box-shadow: 0 0 10px var(--neon-blue);
 }
 
-/* Smooth transitions for all interactive elements */
+/* Smooth futuristic transitions */
 .app button,
 .app [role="button"],
 .app [tabindex] {
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Ensure text remains readable on all backgrounds */
+/* Enhanced text readability with neon glow */
 .app {
   color: white;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
-/* Performance optimizations */
+/* Performance optimizations for futuristic effects */
 .app * {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* Futuristic scrollbars */
+.app::-webkit-scrollbar {
+  width: 8px;
+}
+
+.app::-webkit-scrollbar-track {
+  background: var(--dark-purple);
+}
+
+.app::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+  border-radius: 4px;
+  box-shadow: 0 0 10px var(--neon-blue);
+}
+
+.app::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+  box-shadow: 0 0 15px var(--neon-green);
 }
 
 /* Hide scrollbars on mobile while maintaining functionality */
@@ -55,5 +78,54 @@
   .app {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+}
+
+/* Responsive design for futuristic elements */
+@media (max-width: 640px) {
+  .app {
+    font-size: 14px;
+  }
+  
+  /* Reduce neon effects intensity on mobile for better performance */
+  .neon-glow-blue,
+  .neon-glow-green,
+  .neon-glow-orange,
+  .neon-glow-purple {
+    box-shadow: 0 0 8px currentColor !important;
+  }
+}
+
+@media (min-width: 641px) {
+  .app {
+    font-size: 16px;
+  }
+}
+
+/* Dark mode support enhancement */
+@media (prefers-color-scheme: dark) {
+  .app {
+    background: radial-gradient(ellipse at center, #7A1CCB 0%, #5B0A9E 35%, #1A003D 100%);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .app {
+    background: linear-gradient(135deg, #000066 0%, #330066 100%);
+  }
+  
+  .app *:focus-visible {
+    outline: 3px solid #FFFFFF;
+    box-shadow: 0 0 15px #FFFFFF;
+  }
+}
+
+/* Animation performance optimization */
+@media (prefers-reduced-motion: reduce) {
+  .app * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
