@@ -1,6 +1,4 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 /* Variables CSS para la paleta profesional */
@@ -167,57 +165,6 @@ body {
 ::-moz-selection {
   background: rgba(102, 126, 234, 0.3);
   color: white;
-}
-
-/* Estilo para botones con efectos */
-.btn-primary {
-  @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 
-         text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-xl 
-         transform hover:scale-105 transition-all duration-200 ease-out;
-}
-
-.btn-secondary {
-  @apply bg-gradient-to-r from-secondary-600 to-secondary-700 hover:from-secondary-700 hover:to-secondary-800 
-         text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-xl 
-         transform hover:scale-105 transition-all duration-200 ease-out;
-}
-
-.btn-success {
-  @apply bg-gradient-to-r from-success-500 to-success-600 hover:from-success-600 hover:to-success-700 
-         text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-xl 
-         transform hover:scale-105 transition-all duration-200 ease-out;
-}
-
-.btn-danger {
-  @apply bg-gradient-to-r from-danger-500 to-danger-600 hover:from-danger-600 hover:to-danger-700 
-         text-white font-medium px-6 py-3 rounded-lg shadow-lg hover:shadow-xl 
-         transform hover:scale-105 transition-all duration-200 ease-out;
-}
-
-/* Estilo para cards con glass effect */
-.card-glass {
-  @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl hover:shadow-3xl 
-         transition-all duration-300 hover:bg-white/10;
-}
-
-/* Responsive design helpers */
-@media (max-width: 768px) {
-  body {
-    font-size: 14px;
-  }
-  
-  .glass, .glass-dark {
-    backdrop-filter: blur(15px);
-  }
-}
-
-/* Focus states mejorados */
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: 2px solid rgba(102, 126, 234, 0.8);
-  outline-offset: 2px;
 }
 
 /* Estados de loading */
